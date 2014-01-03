@@ -1,0 +1,28 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ app.request.basepath }}/css/bootstrap.css">
+	<style>
+		.conversation {
+			min-height: 60px;
+			margin-left: 15px;
+		}
+	</style>
+</head>
+<body style="background: url('{{ app.request.basepath }}/img/apoio_background.png')">
+	<div class="top container">
+		cos tu będzie na góże
+	</div>
+	<div class="row well container">
+		{% for item in items %}
+			<div class="conversation">
+				<div class="span"
+				<a href="/conversation/{{ item.getId()}}">
+					{{ item.getSubject() }}
+				</a>
+			</div>
+		{% else %}
+			Placeholder for empty list
+		{% endfor %}
+	</div>
+</body>
+</html>

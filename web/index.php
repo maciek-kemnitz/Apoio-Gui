@@ -2,6 +2,11 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 $app = new Silex\Application();
+$app['debug'] = true;
+
+$app->register(new Silex\Provider\TwigServiceProvider(), array(
+	'twig.path' => __DIR__.'/../Src/Views',
+));
 
 $app->get('/hello/{name}', function ($name) use ($app)
 {
@@ -18,6 +23,7 @@ $app->get('/hello/{name}', function ($name) use ($app)
 
 	$output = (array) json_decode($output);
 //	var_dump($output);
+	$items = [];
 
 	if (is_array($output) && isset($output['results']))
 	{
@@ -25,21 +31,22 @@ $app->get('/hello/{name}', function ($name) use ($app)
 		{
 //			var_dump((array) $entry);
 			$item = new ApoioListItem((array) $entry);
-			echo '
-			<div>
-			<a href="/conversation/'.$item->getId().'">
-			'.$item->getSubject().'
-			</a>
-			</div>
-			';
-			echo "<hr>";
+			$items[] = $item;
+//			echo '
+//			<div>
+//			<a href="/conversation/'.$item->getId().'">
+//			'.$item->getSubject().'
+//			</a>
+//			</div>
+//			';
+//			echo "<hr>";
 		}
 	}
 
 
 	curl_close($ch);
 
-	return 'Hello '.$app->escape($name);
+	return $app['twig']->render('list.page.html.twig', ["items" => $items]);
 });
 
 $app->get('/conversation/{id}', function ($id) use ($app)
@@ -155,7 +162,7 @@ class ApoioListItem
 	{
 		$this->id = $data['id'];
 		$this->name = $data['name'];
-		$this->subject = $data['subject'];
+		$this->subject = $data['subject'] ?: $data['abstract'];
 	}
 
 	public function getId()
