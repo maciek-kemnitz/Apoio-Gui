@@ -3,23 +3,40 @@
 	<link rel="stylesheet" type="text/css" href="{{ app.request.basepath }}/css/bootstrap.css">
 	<style>
 		.conversation {
-			min-height: 60px;
-			margin-left: 15px;
+			/*min-height: 60px;*/
+			/*margin-left: 15px;*/
 		}
+
+        #conversation-list {
+            background-color: #ffffff;
+        }
 	</style>
 </head>
 <body style="background: url('{{ app.request.basepath }}/img/apoio_background.png')">
 	<div class="top container">
 		cos tu będzie na góże
 	</div>
-	<div class="row well container">
+	<div id="conversation-list" class="well container">
 		{% for item in items %}
-			<div class="conversation">
-				<div class="span"
+			<div class="row conversation">
+				<div class="span8">
 				<a href="/conversation/{{ item.getId()}}">
 					{{ item.getSubject() }}
 				</a>
+                </div>
+                <div class="span2">
+                    {% if item.getAssignedUser() is not null %}
+                        {{ item.getAssignedTo() }}
+                    {% endif %}
+                </div>
+                <div class="span2">
+                    {{ item.getAuthor() }}
+                    <br>
+                    {{ item.timePassedSinceUpdate() }} days ago
+                </div>
 			</div>
+            <hr>
+
 		{% else %}
 			Placeholder for empty list
 		{% endfor %}

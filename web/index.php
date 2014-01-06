@@ -8,12 +8,12 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 	'twig.path' => __DIR__.'/../Src/Views',
 ));
 
-$app->get('/hello/{name}', function ($name) use ($app)
+$app->get('/', function () use ($app)
 {
 	$ch = curl_init();
 
 	// set url
-	curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/inbox.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
+	curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/users.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
 
 	//return the transfer as a string
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -23,14 +23,31 @@ $app->get('/hello/{name}', function ($name) use ($app)
 
 	$output = (array) json_decode($output);
 //	var_dump($output);
-	$items = [];
+    $users = [];
+
+    if (is_array($output) && isset($output['results']))
+    {
+        foreach($output['results'] as $user)
+        {
+            $user = new User((array) $user);
+            $users[$user->getId()] = $user;
+        }
+    }
+
+    curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/inbox.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
+
+    $output = curl_exec($ch);
+
+    $output = (array) json_decode($output);
+
+    $items = [];
 
 	if (is_array($output) && isset($output['results']))
 	{
 		foreach($output['results'] as $entry)
 		{
 //			var_dump((array) $entry);
-			$item = new ApoioListItem((array) $entry);
+			$item = new Conversation((array) $entry, $users);
 			$items[] = $item;
 //			echo '
 //			<div>
@@ -46,7 +63,7 @@ $app->get('/hello/{name}', function ($name) use ($app)
 
 	curl_close($ch);
 
-	return $app['twig']->render('list.page.html.twig', ["items" => $items]);
+	return $app['twig']->render('list.page.html.twig', ["items" => $items, "users" => $users]);
 });
 
 $app->get('/conversation/{id}', function ($id) use ($app)
@@ -149,8 +166,55 @@ $app->get('/index-filters', function () use ($app)
 $app->run();
 
 
+class User
+{
+    public $id;
+    public $name;
+    public $surname;
+    public $avatar;
+
+    public function __construct(array $data)
+    {
+        $this->id = $data['id'];
+        $this->name = $data['firstname'];
+        $this->surname = $data['lastname'];
+        $this->avatar = $data['avatar'];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSurname()
+    {
+        return $this->surname;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
 
 
+}
 
 class ApoioListItem
 {
@@ -184,16 +248,34 @@ class ApoioListItem
 class Conversation
 {
 	public $id;
+    public $author;
+    public $status;
 	public $subject;
+	public $created_at;
+	public $updated_at;
+	public $last_reply_at;
+	public $assigned_to_id;
 	public $abstract;
 	public $messages;
+    /** @var  User[] */
+    public $users;
 
-	public function __construct(array $data)
+	public function __construct(array $data, $users)
 	{
 		$this->id = $data['id'];
-		$this->subject = $data['subject'];
-		$this->abstract = $data['abstract'];
-		$this->setMessages((array) $data['messages']);
+        $this->author 	= $data['name'];
+        $this->subject = $data['subject'];
+        $this->abstract = $data['abstract'];
+        $this->setMessages((array) $data['messages']);
+
+
+        $state 		= (array) $data['state'];
+        $this->status 	= $state['state'];
+        $this->created_at = $data['created_at'];
+        $this->updated_at = $data['updated_at'];
+        $this->assigned_to_id = $data['assigned_to_id'];
+        $this->last_reply_at = $data['last_reply_at'];
+        $this->users = $users;
 	}
 
 	protected function setMessages(array $messages)
@@ -237,7 +319,97 @@ class Conversation
 		return $this->subject;
 	}
 
+    /**
+     * @return mixed
+     */
+    public function getAuthor()
+    {
+        return $this->author;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+    public function timePassedSinceUpdate()
+    {
+        $startTimeStamp = strtotime($this->last_reply_at);
+        $endTimeStamp = time();
+
+        $timeDiff = abs($endTimeStamp - $startTimeStamp);
+
+        $numberDays = $timeDiff/86400;
+        $numberDays = intval($numberDays);
+
+        return $numberDays;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAssignedToId()
+    {
+        return $this->assigned_to_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastReplyAt()
+    {
+        return $this->last_reply_at;
+    }
+
+    public function getAssignedTo()
+    {
+        if ($this->assigned_to_id)
+        {
+            $user = $this->users[$this->assigned_to_id];
+
+            if ($user)
+            {
+                return $user->getName() . " " . $user->getSurname();
+            }
+        }
+
+        return "";
+    }
+
+    public function getAssignedUser()
+    {
+
+        if ($this->assigned_to_id)
+        {
+            $user = $this->users[$this->assigned_to_id];
+
+            if ($user)
+            {
+                return $user;
+            }
+        }
+
+        return null;
+    }
 }
 
 class Message
