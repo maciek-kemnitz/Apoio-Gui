@@ -70,11 +70,30 @@ $app->get('/conversation/{id}', function ($id) use ($app)
 {
 	$ch = curl_init();
 
+    // set url
+    curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/users.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
+
+    //return the transfer as a string
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+    // $output contains the output string
+    $output = curl_exec($ch);
+
+    $output = (array) json_decode($output);
+
+    $users = [];
+
+    if (is_array($output) && isset($output['results']))
+    {
+        foreach($output['results'] as $user)
+        {
+            $user = new User((array) $user);
+            $users[$user->getId()] = $user;
+        }
+    }
+
 	// set url
 	curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/conversations/{$id}.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
-
-	//return the transfer as a string
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
 	// $output contains the output string
 	$output = curl_exec($ch);
@@ -85,32 +104,13 @@ $app->get('/conversation/{id}', function ($id) use ($app)
 	if (is_array($output))
 	{
 
-		$conversation = new Conversation((array) $output);
-
-		$messages = $conversation->getMessages();
-		echo "<strong>{$conversation->getSubject()}</strong><br>";
-
-		foreach($messages as $message)
-		{
-			if ($message->getBody())
-			{
-				echo "
-				<div>
-				id: {$message->getId()}
-				<br>
-				body: {$message->getBody()}
-				</div>
-				<hr>
-			";
-			}
-
-		}
+		$conversation = new Conversation((array) $output, $users);
 	}
 
 
 	curl_close($ch);
 
-	return 'Hello ';
+    return $app['twig']->render('conversation.page.html.twig', ["conversation" => $conversation]);
 });
 
 
@@ -420,19 +420,18 @@ class Message
 	public $body;
 	public $created_at;
 	public $source;
+    public $authorName;
 
 	public function __construct(array $message)
 	{
+
 		$this->id = $message['id'];
 		$this->type = $message['type'];
 		$this->userId = $message['user_id'];
 		$this->body = $message['body'];
 		$this->created_at = $message['created_at'];
-
-//		if ($this->type == 'staff' && $this->source == 'assigned')
-//		{
-//
-//		}
+        $this->authorName = $message['name'];
+        $this->source = $message['source'];
 	}
 
 	/**
@@ -450,6 +449,19 @@ class Message
 	{
 		return $this->created_at;
 	}
+
+    public function getDaysAgo()
+    {
+        $startTimeStamp = strtotime($this->created_at);
+        $endTimeStamp = time();
+
+        $timeDiff = abs($endTimeStamp - $startTimeStamp);
+
+        $numberDays = $timeDiff/86400;
+        $numberDays = intval($numberDays);
+
+        return $numberDays;
+    }
 
 	/**
 	 * @return mixed
@@ -475,5 +487,29 @@ class Message
 		return $this->userId;
 	}
 
+    /**
+     * @return mixed
+     */
+    public function getAuthorName()
+    {
+        return $this->authorName;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    public function show()
+    {
+        if ($this->type == 'staff' && in_array($this->source, ['assigned', 'github', 'note']))
+        {
+            return false;
+        }
+
+        return true;
+    }
 }
