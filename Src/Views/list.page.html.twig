@@ -5,24 +5,118 @@
 		.conversation {
 			/*min-height: 60px;*/
 			/*margin-left: 15px;*/
+            height: 65px;
+            border-bottom: 1px solid #f2f2f2;
+            padding: 20px 0px;
+            margin-left: 0px;
 		}
+
+        .conversation:hover {
+            border-color: #cccccc;
+            border-width: 1px;
+            border-style: solid;
+            background-color: #ecf1f3;
+            margin: 0px -20px;
+            padding-left: 19px;
+        }
 
         #conversation-list {
             background-color: #ffffff;
+        }
+
+        .top {
+            margin-top: 20px;
+        }
+        #search {
+            width: 300px;
+            height: 30px;
+        }
+
+        .user-image {
+            /*width: 30px;*/
+            height: 30px;
+        }
+
+        .name {
+            font-size: 15px;
+        }
+
+        .name .caret {
+            vertical-align: middle;
+        }
+
+        .page-nav-header {
+            padding-bottom: 10px;
+        }
+
+        .title {
+            font-size: 17px;
+        }
+
+        .body {
+            font-size: 14px;
+        }
+
+        .description {
+            cursor: hand;
+        }
+
+        .title a:hover {
+            text-decoration: none;
         }
 	</style>
 </head>
 <body style="background: url('{{ app.request.basepath }}/img/apoio_background.png')">
 	<div class="top container">
-		cos tu będzie na góże
+        <div id="nav" class="row">
+            <div class="span4">
+                <form class="form-search">
+                    <input type="text" id="search" class="search-query" placeholder="wyszukaj cos">
+                </form>
+            </div>
+            <div class="span2 offset3">
+                <button class="btn btn-primary" type="button">Compose</button>
+            </div>
+            <div class="span3">
+                <img class="user-image" src="https://www.gravatar.com/avatar/1a34ed733753bfb05ea479395c27a4ea?d=mm&r=g" class="img-circle">
+                <div id="user-menu" class="btn-group">
+                    <a class="dropdown-toggle muted" data-toggle="dropdown-menu" href="#">
+                        <span class="name">Maciek Kemnitz <b class="caret"></b></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        lslsls
+                    </ul>
+                </div>
+            </div>
+        </div>
 	</div>
 	<div id="conversation-list" class="well container">
+        <div class="row page-nav-header">
+            <div class="span3">
+                <h3>Inbox <small style="font-size: 18">6 conversations</small></h3>
+
+            </div>
+            <div class="span1 offset8">
+                archive
+            </div>
+        </div>
 		{% for item in items %}
 			<div class="row conversation">
-				<div class="span8">
-				<a href="/conversation/{{ item.getId()}}">
-					{{ item.getSubject() }}
-				</a>
+				<div class="span6 description">
+                    <div class="title">
+                        <a href="/conversation/{{ item.getId()}}">
+                            {% if item.getSubject != '' %}
+                                {{ item.getSubject() }}
+                            {% else %}
+                                {{ item.getAbstract() }}
+                            {% endif %}
+                        </a>
+                    </div>
+                    {% if item.getSubject != '' %}
+                        <div class="body muted">
+                            {{ item.getAbstract() }}
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="span2">
                     {% if item.getAssignedUser() is not null %}
@@ -35,7 +129,7 @@
                     {{ item.timePassedSinceUpdate() }} days ago
                 </div>
 			</div>
-            <hr>
+            {#<hr>#}
 
 		{% else %}
 			Placeholder for empty list

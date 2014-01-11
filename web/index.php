@@ -265,6 +265,7 @@ class Conversation
 		$this->id = $data['id'];
         $this->author 	= $data['name'];
         $this->subject = $data['subject'];
+        var_dump($this->subject);
         $this->abstract = $data['abstract'];
         $this->setMessages((array) $data['messages']);
 
