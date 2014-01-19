@@ -67,6 +67,10 @@
         .title a:hover {
             text-decoration: none;
         }
+
+        .btn-round {
+            border-radius:2em;
+        }
 	</style>
 </head>
 <body style="background: url('{{ app.request.basepath }}/img/apoio_background.png')">
@@ -79,7 +83,7 @@
             </div>
             <div class="span2 offset3">
                 <form action="MAILTO:front.office@docplanner.com" method="post" enctype="text/plain">
-                    <button class="btn btn-primary" type="submit">Compose</button>
+                    <button class="btn btn-primary btn-round" type="submit">Compose</button>
                 </form>
             </div>
             <div class="span3">
