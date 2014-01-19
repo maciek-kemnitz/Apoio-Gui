@@ -1,12 +1,18 @@
 <?php
 require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/emberlabs/gravatarlib/emberlabs/gravatarlib/Gravatar.php';
 
 $app = new Silex\Application();
 $app['debug'] = true;
+session_start();
+
+
+
 
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
 	'twig.path' => __DIR__.'/../Src/Views',
 ));
+$app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
 $app->get('/', function () use ($app)
 {
@@ -24,7 +30,14 @@ $app->get('/', function () use ($app)
 	$output = (array) json_decode($output);
 //	var_dump($output);
     $users = [];
+    $gravatar = new \emberlabs\GravatarLib\Gravatar();
 
+    $gravatar->setDefaultImage('mm');
+    $gravatar->setAvatarSize(150);
+
+    $gravatar->setMaxRating('pg');
+
+    $app['twig']->addGlobal('gravatar', $gravatar);
     if (is_array($output) && isset($output['results']))
     {
         foreach($output['results'] as $user)
@@ -64,7 +77,8 @@ $app->get('/', function () use ($app)
 	curl_close($ch);
 
 	return $app['twig']->render('list.page.html.twig', ["items" => $items, "users" => $users]);
-});
+})
+->bind('homepage');
 
 $app->get('/conversation/{id}', function ($id) use ($app)
 {
@@ -162,6 +176,44 @@ $app->get('/index-filters', function () use ($app)
 
 	return 'Hello ';
 });
+
+$app->match('/login', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
+{
+
+    $params = [];
+
+    if ($request->isMethod('POST'))
+    {
+        $email = $request->request->get("email");
+
+        if (null === $email)
+        {
+            return new \Symfony\Component\HttpFoundation\Response("Is it so difficult to give us an email?", 500);
+        }
+
+        $emailChunk = strstr($email, '@');
+
+        if ($emailChunk !== '@docplanner.com')
+        {
+            $params['error'] = "Use your docplanner.com email account";
+        }
+        else
+        {
+            $_SESSION['user_email'] = $email;
+
+            $url = $app['url_generator']->generate('homepage');
+            return new \Symfony\Component\HttpFoundation\RedirectResponse($url);
+        }
+    }
+
+    return $app['twig']->render('login.page.html.twig', $params);
+})
+->method("GET|POST");
+
+if (!isset($_SESSION['user_email']) && $_SERVER["REQUEST_URI"] != '/login')
+{
+    header( 'Location: http://local.apoio-gui.pl/login' ) ;
+}
 
 $app->run();
 
@@ -265,7 +317,6 @@ class Conversation
 		$this->id = $data['id'];
         $this->author 	= $data['name'];
         $this->subject = $data['subject'];
-        var_dump($this->subject);
         $this->abstract = $data['abstract'];
         $this->setMessages((array) $data['messages']);
 
@@ -365,6 +416,35 @@ class Conversation
         return $numberDays;
     }
 
+    public function getPastString()
+    {
+        $startTimeStamp = strtotime($this->last_reply_at);
+        $endTimeStamp = time();
+
+        $timeDiff = abs($endTimeStamp - $startTimeStamp);
+
+        $numberDays = $timeDiff/86400;
+        $numberDays = intval($numberDays);
+
+        $numberHours = $timeDiff/3600;
+        $numberHours = intval($numberHours);
+
+        if ($numberDays > 0)
+        {
+            return $numberDays . " days ago";
+        }
+        else if ($numberHours > 0)
+        {
+            return $numberHours . " hours ago";
+        }
+        else
+        {
+            $numberMinutes = $timeDiff/60;
+            $numberMinutes = intval($numberMinutes);
+            return $numberMinutes . " minutes ago";
+        }
+    }
+
     /**
      * @return mixed
      */
@@ -462,6 +542,32 @@ class Message
         $numberDays = intval($numberDays);
 
         return $numberDays;
+    }
+
+    public function getPastString()
+    {
+        $startTimeStamp = strtotime($this->created_at);
+        $endTimeStamp = time();
+
+        $timeDiff = abs($endTimeStamp - $startTimeStamp);
+
+        $numberDays = $timeDiff/86400;
+        $numberHours = $timeDiff/3600;
+
+
+        if ($numberDays > 0)
+        {
+            return $numberDays . " days ago";
+        }
+        else if ($numberHours > 0)
+        {
+            return $numberDays . " hours ago";
+        }
+        else
+        {
+            $numberMinuets = $timeDiff/60;
+            return $numberDays . " minuets ago";
+        }
     }
 
 	/**

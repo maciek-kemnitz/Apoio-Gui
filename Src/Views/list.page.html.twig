@@ -1,6 +1,9 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="{{ app.request.basepath }}/css/bootstrap.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
+    <script src="{{ app.request.basepath }}/js/bootstrap.js"></script>
 	<style>
 		.conversation {
 			/*min-height: 60px;*/
@@ -75,16 +78,19 @@
                 </form>
             </div>
             <div class="span2 offset3">
-                <button class="btn btn-primary" type="button">Compose</button>
+                <form action="MAILTO:front.office@docplanner.com" method="post" enctype="text/plain">
+                    <button class="btn btn-primary" type="submit">Compose</button>
+                </form>
             </div>
             <div class="span3">
-                <img class="user-image" src="https://www.gravatar.com/avatar/1a34ed733753bfb05ea479395c27a4ea?d=mm&r=g" class="img-circle">
+                <img class="user-image" src="{{ gravatar.get('maciek.kemnitz@docplanner.com')|raw }}" class="img-circle">
                 <div id="user-menu" class="btn-group">
-                    <a class="dropdown-toggle muted" data-toggle="dropdown-menu" href="#">
+
+                    <a class="dropdown-toggle muted" role="button" data-toggle="dropdown" href="#">
                         <span class="name">Maciek Kemnitz <b class="caret"></b></span>
                     </a>
-                    <ul class="dropdown-menu">
-                        lslsls
+                    <ul class="dropdown-menu" role="menu">
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
                     </ul>
                 </div>
             </div>
@@ -93,7 +99,7 @@
 	<div id="conversation-list" class="well container">
         <div class="row page-nav-header">
             <div class="span3">
-                <h3>Inbox <small style="font-size: 18">6 conversations</small></h3>
+                <h3>Inbox <small style="font-size: 18">{{ items|length }} conversations</small></h3>
 
             </div>
             <div class="span1 offset8">
@@ -126,7 +132,7 @@
                 <div class="span2">
                     {{ item.getAuthor() }}
                     <br>
-                    {{ item.timePassedSinceUpdate() }} days ago
+                    {{ item.getPastString() }}
                 </div>
 			</div>
             {#<hr>#}

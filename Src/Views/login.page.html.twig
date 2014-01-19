@@ -1,0 +1,114 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ app.request.basepath }}/css/bootstrap.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
+    <script src="{{ app.request.basepath }}/js/bootstrap.js"></script>
+	<style>
+        body {
+            background: url('{{ app.request.basepath }}/img/bg2.png');
+        }
+
+		.conversation {
+			/*min-height: 60px;*/
+			/*margin-left: 15px;*/
+            height: 65px;
+            border-bottom: 1px solid #f2f2f2;
+            padding: 20px 0px;
+            margin-left: 0px;
+		}
+
+        .conversation:hover {
+            border-color: #cccccc;
+            border-width: 1px;
+            border-style: solid;
+            background-color: #ecf1f3;
+            margin: 0px -20px;
+            padding-left: 19px;
+        }
+
+        #conversation-list {
+            background-color: #ffffff;
+        }
+
+        .top {
+            margin-top: 20px;
+        }
+        #search {
+            width: 300px;
+            height: 30px;
+        }
+
+        .user-image {
+            /*width: 30px;*/
+            height: 30px;
+        }
+
+        .name {
+            font-size: 15px;
+        }
+
+        .name .caret {
+            vertical-align: middle;
+        }
+
+        .page-nav-header {
+            padding-bottom: 10px;
+        }
+
+        .title {
+            font-size: 17px;
+        }
+
+        .body {
+            font-size: 14px;
+
+        }
+
+        .description {
+            cursor: hand;
+        }
+
+        .title a:hover {
+            text-decoration: none;
+        }
+
+        .login-container {
+            width: 300px;
+            padding-top: 80px;
+            margin: auto;
+        }
+        #login-form input{
+            width: 260px;
+            height: 30px;
+            margin-bottom: 20px;
+        }
+
+        #login-form {
+            margin-bottom: 0px;
+        }
+
+        .btn-round {
+            border-radius:2em;
+        }
+	</style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="well">
+            <form id="login-form" method="POST">
+                <fieldset>
+                    <legend><strong>ZnanyLekarz Front Office</strong></legend>
+                    <input type="email" name="email" placeholder="name.surname@docplanner.com" required="required">
+                    {% if error is defined %}
+                        <div class="alert alert-error">
+                           {{ error }}
+                        </div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary btn-round pull-right">SIGN IN</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
