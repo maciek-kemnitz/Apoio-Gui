@@ -1,0 +1,29 @@
+<div class="row conversation">
+	<div class="span6 description">
+		<div class="title">
+			<a href="/conversation/{{ item.getId()}}">
+				{% if item.getSubject != '' %}
+					{{ item.getSubject() }}
+				{% else %}
+					{{ item.getAbstract() }}
+				{% endif %}
+			</a>
+		</div>
+		{% if item.getSubject != '' %}
+			<div class="body muted">
+				{{ item.getAbstract() }}
+			</div>
+		{% endif %}
+	</div>
+	<div class="span2">
+		{% if item.getAssignedUser() is not null %}
+			{{ item.getAssignedTo() }}
+		{% endif %}
+	</div>
+	<div class="span2">
+		{{ item.getAuthor() }}
+		<br>
+		<small class="muted">{{ item.getPastString() }}</small>
+	</div>
+</div>
+

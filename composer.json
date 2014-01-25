@@ -2,7 +2,8 @@
 	"require": {
 		"silex/silex": "~1.1",
 		"twig/twig": ">=1.8,<2.0-dev",
-        "emberlabs/gravatarlib": "dev-master"
+    "emberlabs/gravatarlib": "dev-master",
+		"google/apiclient": "dev-master"
 	}
 }
 

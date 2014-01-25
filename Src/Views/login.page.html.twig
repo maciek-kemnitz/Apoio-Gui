@@ -96,19 +96,22 @@
 <body>
     <div class="login-container">
         <div class="well">
-            <form id="login-form" method="POST">
-                <fieldset>
-                    <legend><strong>ZnanyLekarz Front Office</strong></legend>
-                    <input type="email" name="email" placeholder="name.surname@docplanner.com" required="required">
-                    {% if error is defined %}
-                        <div class="alert alert-error">
-                           {{ error }}
-                        </div>
-                    {% endif %}
-                    <button type="submit" class="btn btn-primary btn-round pull-right">SIGN IN</button>
-                </fieldset>
-            </form>
+            {#<form id="login-form" method="POST">#}
+                {#<fieldset>#}
+                    {#<legend><strong>ZnanyLekarz Front Office</strong></legend>#}
+                    {#<input type="email" name="email" placeholder="name.surname@docplanner.com" required="required">#}
+                    {#{% if error is defined %}#}
+                        {#<div class="alert alert-error">#}
+                           {#{{ error }}#}
+                        {#</div>#}
+                    {#{% endif %}#}
+                    {#<button type="submit" class="btn btn-primary btn-round pull-right">SIGN IN</button>#}
+                {#</fieldset>#}
+            {#</form>#}
+			<a href="{{ authUrl }}">Logi in</a>
         </div>
     </div>
+
+
 </body>
 </html>

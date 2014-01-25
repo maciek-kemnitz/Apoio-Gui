@@ -71,15 +71,20 @@
         .btn-round {
             border-radius:2em;
         }
+
+		.animation_image {
+			padding-top: 20px;
+		}
+
 	</style>
 </head>
 <body style="background: url('{{ app.request.basepath }}/img/apoio_background.png')">
 	<div class="top container">
         <div id="nav" class="row">
             <div class="span4">
-                <form class="form-search">
-                    <input type="text" id="search" class="search-query" placeholder="wyszukaj cos">
-                </form>
+                {#<form action="/search" class="form-search" method="GET">#}
+                    {#<input type="text" id="search" class="search-query" name="q" placeholder="wyszukaj cos">#}
+                {#</form>#}
             </div>
             <div class="span2 offset3">
                 <form action="MAILTO:front.office@docplanner.com" method="post" enctype="text/plain">
@@ -87,14 +92,14 @@
                 </form>
             </div>
             <div class="span3">
-                <img class="user-image" src="{{ gravatar.get('maciek.kemnitz@docplanner.com')|raw }}" class="img-circle">
+                <img class="user-image" src="{{ gravatar.get(user_email)|raw }}" class="img-circle">
                 <div id="user-menu" class="btn-group">
 
                     <a class="dropdown-toggle muted" role="button" data-toggle="dropdown" href="#">
-                        <span class="name">Maciek Kemnitz <b class="caret"></b></span>
+                        <span class="name">{{ display_name }}<b class="caret"></b></span>
                     </a>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="/logout">Log out</a></li>
                     </ul>
                 </div>
             </div>
@@ -136,7 +141,7 @@
                 <div class="span2">
                     {{ item.getAuthor() }}
                     <br>
-                    {{ item.getPastString() }}
+                    <small class="muted">{{ item.getPastString() }}</small>
                 </div>
 			</div>
             {#<hr>#}
@@ -144,6 +149,73 @@
 		{% else %}
 			Placeholder for empty list
 		{% endfor %}
+		<div class="animation_image" style="display:none" align="center">
+			<img src="{{ app.request.basepath }}/img/ajax-loader.gif">
+		</div>
 	</div>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+//			$('.form-search').keypress(function(event) {
+//				if (event.which == 13) {
+//					event.preventDefault();
+//					$(this).submit();
+//				}
+//			});
+
+
+
+			var track_load = 1;
+			var loading  = false; //to prevents multipal ajax loads
+			var total_groups = 4;
+
+
+
+			$(window).scroll(function() {
+
+				if($(window).scrollTop() + $(window).height() == $(document).height())
+				{
+					if(track_load <= total_groups && loading==false)
+					{
+						loading = true;
+						$('.animation_image').show();
+
+
+						$.ajax({
+							type: 'POST',
+							url: '/ajax/inbox',
+							data:{
+								page:track_load
+							},
+							dataType: 'json',
+							success: function(result){
+								console.log(result);
+								if (result['status'] == 'ok')
+								{
+									$('.animation_image').hide();
+									var loader = $("div.animation_image");
+									$("div.animation_image").remove();
+
+									$.each(result['list-item'], function(k, v) {
+										$("#conversation-list").append(v);
+									});
+
+									$("#conversation-list").append(loader);
+
+
+									track_load++;
+									loading = false;
+								}
+								else
+								{
+
+								}
+							}
+						});
+					}
+				}
+			});
+		});
+	</script>
 </body>
 </html>

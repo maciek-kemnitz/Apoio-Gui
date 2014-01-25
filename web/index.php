@@ -14,6 +14,68 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 ));
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
+$gravatar = new \emberlabs\GravatarLib\Gravatar();
+
+$gravatar->setDefaultImage('mm');
+$gravatar->setAvatarSize(150);
+
+$gravatar->setMaxRating('pg');
+
+$app['twig']->addGlobal('gravatar', $gravatar);
+
+$app->post('/ajax/inbox', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
+{
+	$page = $request->request->get('page');
+
+	$ch = curl_init();
+
+	// set url
+	curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/users.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
+
+	//return the transfer as a string
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+	// $output contains the output string
+	$output = curl_exec($ch);
+
+	$output = (array) json_decode($output);
+	//	var_dump($output);
+	$users = [];
+
+	if (is_array($output) && isset($output['results']))
+	{
+		foreach($output['results'] as $user)
+		{
+			$user = new User((array) $user);
+			$users[$user->getId()] = $user;
+		}
+	}
+
+	curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/inbox.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9&page=".$page);
+
+	$output = curl_exec($ch);
+
+	$output = (array) json_decode($output);
+
+	$items = [];
+	$result = [];
+
+	if (is_array($output) && isset($output['results']))
+	{
+		foreach($output['results'] as $entry)
+		{
+			$item = new Conversation((array) $entry, $users);
+			$result['list-item'][] = $app['twig']->render('list-item.block.html.twig', ["item" => $item]);
+		}
+
+		$result['status'] = 'ok';
+	}
+
+	curl_close($ch);
+
+	return new \Symfony\Component\HttpFoundation\JsonResponse($result);
+});
+
 $app->get('/', function () use ($app)
 {
 	$ch = curl_init();
@@ -30,14 +92,7 @@ $app->get('/', function () use ($app)
 	$output = (array) json_decode($output);
 //	var_dump($output);
     $users = [];
-    $gravatar = new \emberlabs\GravatarLib\Gravatar();
 
-    $gravatar->setDefaultImage('mm');
-    $gravatar->setAvatarSize(150);
-
-    $gravatar->setMaxRating('pg');
-
-    $app['twig']->addGlobal('gravatar', $gravatar);
     if (is_array($output) && isset($output['results']))
     {
         foreach($output['results'] as $user)
@@ -59,17 +114,8 @@ $app->get('/', function () use ($app)
 	{
 		foreach($output['results'] as $entry)
 		{
-//			var_dump((array) $entry);
 			$item = new Conversation((array) $entry, $users);
 			$items[] = $item;
-//			echo '
-//			<div>
-//			<a href="/conversation/'.$item->getId().'">
-//			'.$item->getSubject().'
-//			</a>
-//			</div>
-//			';
-//			echo "<hr>";
 		}
 	}
 
@@ -177,45 +223,81 @@ $app->get('/index-filters', function () use ($app)
 	return 'Hello ';
 });
 
+
+
+$app->match('/oauth2callback', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
+{
+	/** @var Google_Client $client */
+	$client = $app['google_client'];
+
+	if (isset($_GET['code'])) {
+
+		$client->authenticate($_GET['code']);
+		$_SESSION['access_token'] = $client->getAccessToken();
+		$url = $app['url_generator']->generate('homepage');
+		return new \Symfony\Component\HttpFoundation\RedirectResponse($url);
+	}
+	else
+	{
+		$url = $app['url_generator']->generate('login');
+		return new \Symfony\Component\HttpFoundation\RedirectResponse($url);
+	}
+});
+
 $app->match('/login', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
 {
+	/** @var Google_Client $client */
+	$client = $app['google_client'];
+	$authUrl = $client->createAuthUrl();
 
     $params = [];
-
-    if ($request->isMethod('POST'))
-    {
-        $email = $request->request->get("email");
-
-        if (null === $email)
-        {
-            return new \Symfony\Component\HttpFoundation\Response("Is it so difficult to give us an email?", 500);
-        }
-
-        $emailChunk = strstr($email, '@');
-
-        if ($emailChunk !== '@docplanner.com')
-        {
-            $params['error'] = "Use your docplanner.com email account";
-        }
-        else
-        {
-            $_SESSION['user_email'] = $email;
-
-            $url = $app['url_generator']->generate('homepage');
-            return new \Symfony\Component\HttpFoundation\RedirectResponse($url);
-        }
-    }
+	$params['authUrl'] = $authUrl;
 
     return $app['twig']->render('login.page.html.twig', $params);
 })
-->method("GET|POST");
+->method("GET|POST")
+->bind('login');
 
-if (!isset($_SESSION['user_email']) && $_SERVER["REQUEST_URI"] != '/login')
+$app->get('/logout', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
 {
-    header( 'Location: http://local.apoio-gui.pl/login' ) ;
+	unset($_SESSION['access_token']);
+
+	$url = $app['url_generator']->generate('login');
+	return new \Symfony\Component\HttpFoundation\RedirectResponse($url);
+
+})
+->bind('logout');
+
+$client = new Google_Client();
+$client->setClientId('439195701200-lpl78q0mf721f8s13r4evn641uk17b6h.apps.googleusercontent.com');
+$client->setClientSecret('yAAISB1eZLLuubnneke0YMQ8');
+$client->setRedirectUri('http://local.apoio-gui.pl/oauth2callback');
+//$client->setScopes("https://www.googleapis.com/auth/plus.login");
+$client->setScopes("https://www.googleapis.com/auth/userinfo.email");
+
+$app['google_client'] = $client;
+
+if (!isset($_SESSION['access_token']) && ($_SERVER["REQUEST_URI"] != '/login' && false == strstr($_SERVER["REQUEST_URI"], '/oauth2callback')))
+{
+	header( 'Location: http://local.apoio-gui.pl/login' );
+	exit;
+}
+elseif (isset($_SESSION['access_token']) && $_SESSION['access_token'])
+{
+	$client->setAccessToken($_SESSION['access_token']);
+	$plus = new Google_Service_Plus($client);
+	$emails = $plus->people->get("me")->getEmails();
+	$email = $emails[0]['value'];
+	$display_name = explode("@",$email);
+	$app['user_email'] = $email;
+	$app['twig']->addGlobal('user_email', $email);
+	$app['twig']->addGlobal('display_name', $display_name[0]);
 }
 
+
 $app->run();
+
+
 
 
 class User

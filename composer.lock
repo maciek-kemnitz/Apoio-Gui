@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "148f2d47759752a2446b0168e5d6e87b",
+    "hash": "e76cde352847a12aee02c40b2de495ba",
     "packages": [
         {
             "name": "emberlabs/gravatarlib",
@@ -54,6 +54,43 @@
                 "twig"
             ],
             "time": "2011-12-28 22:28:37"
+        },
+        {
+            "name": "google/apiclient",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/google/google-api-php-client.git",
+                "reference": "792e5eccd0490dc9da8237d32ec0473a2c782961"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/792e5eccd0490dc9da8237d32ec0473a2c782961",
+                "reference": "792e5eccd0490dc9da8237d32ec0473a2c782961",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.1"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                "src/"
+            ],
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Client library for Google APIs",
+            "homepage": "http://developers.google.com/api-client-library/php",
+            "keywords": [
+                "google"
+            ],
+            "time": "2014-01-24 21:39:14"
         },
         {
             "name": "pimple/pimple",
@@ -577,7 +614,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "emberlabs/gravatarlib": 20
+        "emberlabs/gravatarlib": 20,
+        "google/apiclient": 20
     },
     "platform": [
 
