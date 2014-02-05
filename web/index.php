@@ -17,7 +17,7 @@ $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $gravatar = new \emberlabs\GravatarLib\Gravatar();
 
 $gravatar->setDefaultImage('mm');
-$gravatar->setAvatarSize(150);
+$gravatar->setAvatarSize(50);
 
 $gravatar->setMaxRating('pg');
 
@@ -30,7 +30,7 @@ $app->post('/ajax/inbox', function (\Symfony\Component\HttpFoundation\Request $r
 	$ch = curl_init();
 
 	// set url
-	curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/users.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
+	curl_setopt($ch, CURLOPT_URL, "https://api.apo.io/users.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
 
 	//return the transfer as a string
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -51,7 +51,7 @@ $app->post('/ajax/inbox', function (\Symfony\Component\HttpFoundation\Request $r
 		}
 	}
 
-	curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/inbox.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9&page=".$page);
+	curl_setopt($ch, CURLOPT_URL, "https://api.apo.io/inbox.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9&page=".$page);
 
 	$output = curl_exec($ch);
 
@@ -76,84 +76,37 @@ $app->post('/ajax/inbox', function (\Symfony\Component\HttpFoundation\Request $r
 	return new \Symfony\Component\HttpFoundation\JsonResponse($result);
 });
 
-$app->get('/', function () use ($app)
+
+
+$app->get('/archive', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
 {
-	$ch = curl_init();
+	$users = getUsers();
+	list($conversations, $totalCount) = getConversations('archive', $users);
 
-	// set url
-	curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/users.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
+	return $app['twig']->render('list.page.html.twig', ["items" => $conversations, "users" => $users, "type" => "archive", "totalCount" => $totalCount]);
+})
+->bind('archive');
 
-	//return the transfer as a string
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$app->get('/', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
+{
+	$users = getUsers();
+	list($conversations, $totalCount) = getConversations('inbox', $users);
+	$pageCount = ceil($totalCount/30);
 
-	// $output contains the output string
-	$output = curl_exec($ch);
-
-	$output = (array) json_decode($output);
-//	var_dump($output);
-    $users = [];
-
-    if (is_array($output) && isset($output['results']))
-    {
-        foreach($output['results'] as $user)
-        {
-            $user = new User((array) $user);
-            $users[$user->getId()] = $user;
-        }
-    }
-
-    curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/inbox.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
-
-    $output = curl_exec($ch);
-
-    $output = (array) json_decode($output);
-
-    $items = [];
-
-	if (is_array($output) && isset($output['results']))
-	{
-		foreach($output['results'] as $entry)
-		{
-			$item = new Conversation((array) $entry, $users);
-			$items[] = $item;
-		}
-	}
-
-
-	curl_close($ch);
-
-	return $app['twig']->render('list.page.html.twig', ["items" => $items, "users" => $users]);
+	return $app['twig']->render('list.page.html.twig', ["items" => $conversations, "users" => $users, "type" => "inbox", "totalCount" => $totalCount, "pageCount" => $pageCount]);
 })
 ->bind('homepage');
 
 $app->get('/conversation/{id}', function ($id) use ($app)
 {
+	$users = getUsers();
+
 	$ch = curl_init();
-
-    // set url
-    curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/users.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
-
     //return the transfer as a string
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-    // $output contains the output string
-    $output = curl_exec($ch);
-
-    $output = (array) json_decode($output);
-
-    $users = [];
-
-    if (is_array($output) && isset($output['results']))
-    {
-        foreach($output['results'] as $user)
-        {
-            $user = new User((array) $user);
-            $users[$user->getId()] = $user;
-        }
-    }
-
 	// set url
-	curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/conversations/{$id}.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
+	curl_setopt($ch, CURLOPT_URL, "https://api.apo.io/conversations/{$id}.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
 
 	// $output contains the output string
 	$output = curl_exec($ch);
@@ -182,7 +135,7 @@ $app->get('/index-filters', function () use ($app)
 
 	$ch = curl_init();
 
-	curl_setopt($ch, CURLOPT_URL, "http://api.apo.io/inbox.json?access_token=token");
+	curl_setopt($ch, CURLOPT_URL, "https://api.apo.io/inbox.json?access_token=token");
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_ENCODING, 'utf-8');
 
@@ -577,6 +530,9 @@ class Conversation
 
 class Message
 {
+	const GITHUB_ISSUE_CREATED = 'created';
+	const GITHUB_ISSUE_CLOSED = 'closed';
+
 	public $id;
 	public $type;
 	public $userId;
@@ -584,10 +540,13 @@ class Message
 	public $created_at;
 	public $source;
     public $authorName;
+	public $sentFrom;
+	public $avatar;
+	public $metaData;
+	public $githubAction;
 
 	public function __construct(array $message)
 	{
-
 		$this->id = $message['id'];
 		$this->type = $message['type'];
 		$this->userId = $message['user_id'];
@@ -595,6 +554,35 @@ class Message
 		$this->created_at = $message['created_at'];
         $this->authorName = $message['name'];
         $this->source = $message['source'];
+        $this->sentFrom = $message['sent_from'];
+		$this->avatar = $message['avatar'];
+		$metaData = (array) $message['meta_data'];
+		if (isset($metaData['github_action']))
+		{
+			$this->githubAction = $metaData['github_action'];
+		}
+
+	}
+
+	public function formStaff()
+	{
+		return $this->type == "staff";
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getMetaData()
+	{
+		return $this->metaData;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAvatar()
+	{
+		return $this->avatar;
 	}
 
 	/**
@@ -602,6 +590,17 @@ class Message
 	 */
 	public function getBody()
 	{
+		if ($this->type == 'staff' && $this->source =='github')
+		{
+			if ($this->githubAction == self::GITHUB_ISSUE_CREATED)
+			{
+				return "Github issue has been created";
+			}
+			else
+			{
+				return "Github issue has been closed";
+			}
+		}
 		return $this->body;
 	}
 
@@ -633,23 +632,26 @@ class Message
 
         $timeDiff = abs($endTimeStamp - $startTimeStamp);
 
-        $numberDays = $timeDiff/86400;
-        $numberHours = $timeDiff/3600;
+		$numberDays = $timeDiff/86400;
+		$numberDays = intval($numberDays);
 
+		$numberHours = $timeDiff/3600;
+		$numberHours = intval($numberHours);
 
-        if ($numberDays > 0)
-        {
-            return $numberDays . " days ago";
-        }
-        else if ($numberHours > 0)
-        {
-            return $numberDays . " hours ago";
-        }
-        else
-        {
-            $numberMinuets = $timeDiff/60;
-            return $numberDays . " minuets ago";
-        }
+		if ($numberDays > 0)
+		{
+			return $numberDays . " days ago";
+		}
+		else if ($numberHours > 0)
+		{
+			return $numberHours . " hours ago";
+		}
+		else
+		{
+			$numberMinutes = $timeDiff/60;
+			$numberMinutes = intval($numberMinutes);
+			return $numberMinutes . " minutes ago";
+		}
     }
 
 	/**
@@ -694,11 +696,82 @@ class Message
 
     public function show()
     {
-        if ($this->type == 'staff' && in_array($this->source, ['assigned', 'github', 'note']))
+        if ($this->type == 'staff' && in_array($this->source, ['assigned', 'note']))
         {
             return false;
         }
 
         return true;
     }
+
+	/**
+	 * @return mixed
+	 */
+	public function getSentFrom()
+	{
+		return $this->sentFrom;
+	}
+
+
+}
+
+function getUsers()
+{
+	$ch = curl_init();
+
+	// set url
+	curl_setopt($ch, CURLOPT_URL, "https://api.apo.io/users.json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
+
+	//return the transfer as a string
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+	// $output contains the output string
+	$output = curl_exec($ch);
+
+	$output = (array) json_decode($output);
+	//	var_dump($output);
+	$users = [];
+
+	if (is_array($output) && isset($output['results']))
+	{
+		foreach($output['results'] as $user)
+		{
+			$user = new User((array) $user);
+			$users[$user->getId()] = $user;
+		}
+	}
+
+	curl_close($ch);
+
+	return $users;
+}
+
+function getConversations($type, $users)
+{
+	$ch = curl_init();
+
+	curl_setopt($ch, CURLOPT_URL, "https://api.apo.io/".$type.".json?access_token=8N88ng7M9vhDknokojinKknJKkIH9EMj99jokmvCddYrcTnMfokW03riFJ9kNKo9kK0oM98hMOj874IJVMOok9");
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+	$output = curl_exec($ch);
+
+	$output = (array) json_decode($output);
+
+	$items = [];
+	$totalCount = 0;
+
+	if (is_array($output) && isset($output['results']))
+	{
+		$totalCount = $output["total"];
+
+		foreach($output['results'] as $entry)
+		{
+			$item = new Conversation((array) $entry, $users);
+			$items[] = $item;
+		}
+	}
+
+	curl_close($ch);
+
+	return [$items, $totalCount];
 }

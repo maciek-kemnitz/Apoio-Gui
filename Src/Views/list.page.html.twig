@@ -10,6 +10,7 @@
 			/*margin-left: 15px;*/
             height: 65px;
             border-bottom: 1px solid #f2f2f2;
+            border-top: 1px solid #ffffff;
             padding: 20px 0px;
             margin-left: 0px;
 		}
@@ -79,40 +80,19 @@
 	</style>
 </head>
 <body style="background: url('{{ app.request.basepath }}/img/apoio_background.png')">
-	<div class="top container">
-        <div id="nav" class="row">
-            <div class="span4">
-                {#<form action="/search" class="form-search" method="GET">#}
-                    {#<input type="text" id="search" class="search-query" name="q" placeholder="wyszukaj cos">#}
-                {#</form>#}
-            </div>
-            <div class="span2 offset3">
-                <form action="MAILTO:front.office@docplanner.com" method="post" enctype="text/plain">
-                    <button class="btn btn-primary btn-round" type="submit">Compose</button>
-                </form>
-            </div>
-            <div class="span3">
-                <img class="user-image" src="{{ gravatar.get(user_email)|raw }}" class="img-circle">
-                <div id="user-menu" class="btn-group">
-
-                    <a class="dropdown-toggle muted" role="button" data-toggle="dropdown" href="#">
-                        <span class="name">{{ display_name }}<b class="caret"></b></span>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="/logout">Log out</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-	</div>
+	{% include 'top.block.html.twig' %}
 	<div id="conversation-list" class="well container">
         <div class="row page-nav-header">
-            <div class="span3">
-                <h3>Inbox <small style="font-size: 18">{{ items|length }} conversations</small></h3>
-
+            <div class="span4">
+                <h3>{{ type|capitalize }} <small style="font-size: 18">{{ totalCount }} conversations</small></h3>
             </div>
-            <div class="span1 offset8">
-                archive
+            <div class="span1 offset7">
+				{% if type == "archive" %}
+					<a href="/">inbox</a>
+				{% else %}
+					<a href="/archive">archive</a>
+				{% endif %}
+
             </div>
         </div>
 		{% for item in items %}
@@ -163,23 +143,19 @@
 //				}
 //			});
 
-
-
 			var track_load = 1;
-			var loading  = false; //to prevents multipal ajax loads
-			var total_groups = 4;
-
-
+			var loading  = false;
+			var total_groups = {{ pageCount }};
 
 			$(window).scroll(function() {
 
 				if($(window).scrollTop() + $(window).height() == $(document).height())
 				{
-					if(track_load <= total_groups && loading==false)
+					if(track_load < total_groups && loading==false)
 					{
 						loading = true;
 						$('.animation_image').show();
-
+						track_load++;
 
 						$.ajax({
 							type: 'POST',
