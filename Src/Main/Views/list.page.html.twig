@@ -30,6 +30,7 @@
 
         .top {
             margin-top: 20px;
+            margin-bottom: 20px;
         }
         #search {
             width: 300px;
@@ -63,6 +64,9 @@
 
         .description {
             cursor: hand;
+            margin-left: 0px;
+            padding-left: 20px;
+            position: relative;
         }
 
         .title a:hover {
@@ -88,6 +92,26 @@
             box-shadow: 0 0 4px rgba(0, 0, 0, .8);
             -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, .8);
             -moz-box-shadow: 0 0 4px rgba(0, 0, 0, .8);
+        }
+
+        .read {
+            background: url({{ app.request.basepath }}/img/read.png);
+            background-size: 15px 15px;
+            width: 15px;
+            height: 15px;
+            position: absolute;
+            top: 0px;
+            left: -2px;
+        }
+
+        .unread {
+            background: url({{ app.request.basepath }}/img/unread.png);
+            background-size: 15px 15px;
+            width: 15px;
+            height: 15px;
+            position: absolute;
+            top: 0px;
+            left: -2px;
         }
 
 	</style>
@@ -125,6 +149,11 @@
                             {{ item.getAbstract() }}
                         </div>
                     {% endif %}
+                    {% if item.hasBeenRead() %}
+                        <span class="read"></span>
+                    {% else %}
+                        <span class="unread"></span>
+                    {% endif %}
                 </div>
                 <div class="span1 offset1">
                     {% if item.getAssignedUser() is not null %}
@@ -139,7 +168,6 @@
                     <small class="muted">{{ item.getPastString() }}</small>
                 </div>
 			</div>
-            {#<hr>#}
 
 		{% else %}
 			Placeholder for empty list
@@ -176,7 +204,6 @@
 							},
 							dataType: 'json',
 							success: function(result){
-								console.log(result);
 								if (result['status'] == 'ok')
 								{
 									$('.animation_image').hide();
@@ -203,7 +230,7 @@
 				}
 			});
 
-            $('.description').click(function(){
+            $('#conversation-list').on("click", ".description", function(){
                 var url = $(this).find('.title a').attr('href');
                 window.location.href = url;
             });

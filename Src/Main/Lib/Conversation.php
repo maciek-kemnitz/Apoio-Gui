@@ -27,6 +27,8 @@ class Conversation
 
     public $lastEmailyakId;
 
+    public $readBy;
+
 
 
     public function __construct(array $data, $users)
@@ -46,6 +48,20 @@ class Conversation
         $this->assigned_to_id = isset($data['assigned_to_id']) ? $data['assigned_to_id'] : null;
         $this->last_reply_at = $data['last_reply_at'];
         $this->users = $users;
+        $this->readBy = (array) $data['read_by'];
+    }
+
+    /**
+     * @return array
+     */
+    public function getReadBy()
+    {
+        return $this->readBy;
+    }
+
+    public function hasBeenRead()
+    {
+        return count($this->readBy) > 0;
     }
 
     protected function setMessages(array $messages)

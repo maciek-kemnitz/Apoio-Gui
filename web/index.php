@@ -101,13 +101,13 @@ if (!isset($_SESSION['access_token']) && ($_SERVER["REQUEST_URI"] != '/login' &&
 }
 elseif (isset($_SESSION['access_token']) && $_SESSION['access_token'])
 {
-//    $token = $_SESSION['access_token'];
-//    $tokenArray = json_decode($token);
-//
-//    if (isset($tokenArray['refresh_token']))
-//    {
-//        $client->refreshToken($tokenArray['refresh_token']);
-//    }
+    $token = $_SESSION['access_token'];
+    $tokenArray = (array) json_decode($token);
+
+    if (isset($tokenArray['refresh_token']))
+    {
+        $client->refreshToken($tokenArray['refresh_token']);
+    }
 ////    $client->verifyIdToken($_SESSION['access_token']);
 ////    $plus = new Google_Service_Plus($client);
 //    var_dump((array)json_decode($_SESSION["access_token"]));
@@ -128,7 +128,7 @@ elseif (isset($_SESSION['access_token']) && $_SESSION['access_token'])
     }
     catch (Exception $exc)
     {
-//        unset($_SESSION['access_token']);
+        unset($_SESSION['access_token']);
         header( 'Location: http://local.apoio-gui.pl/login' );
         exit;
     }
