@@ -77,6 +77,19 @@
 			padding-top: 20px;
 		}
 
+        .circular {
+            width: 50px;
+            height: 50px;
+
+            border-radius: 25px;
+            -webkit-border-radius: 25px;
+            -moz-border-radius: 25px;
+
+            box-shadow: 0 0 4px rgba(0, 0, 0, .8);
+            -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, .8);
+            -moz-box-shadow: 0 0 4px rgba(0, 0, 0, .8);
+        }
+
 	</style>
 </head>
 <body style="background: url('{{ app.request.basepath }}/img/apoio_background.png')">
@@ -113,12 +126,14 @@
                         </div>
                     {% endif %}
                 </div>
-                <div class="span2">
+                <div class="span1 offset1">
                     {% if item.getAssignedUser() is not null %}
-                        {{ item.getAssignedTo() }}
+                        <a href="#" data-toggle="tooltip" title="Assigned to {{ item.getAssignedTo() }}">
+                            <div class="circular" style="background: url({{ item.getAssignedToAvatar()|raw }}); background-size: 50px 50px;"></div>
+                        </a>
                     {% endif %}
                 </div>
-                <div class="span2">
+                <div class="span2 offset1">
                     {{ item.getAuthor() }}
                     <br>
                     <small class="muted">{{ item.getPastString() }}</small>
@@ -136,16 +151,11 @@
 
 	<script type="text/javascript">
 		$(document).ready(function(){
-//			$('.form-search').keypress(function(event) {
-//				if (event.which == 13) {
-//					event.preventDefault();
-//					$(this).submit();
-//				}
-//			});
 
 			var track_load = 1;
 			var loading  = false;
 			var total_groups = {{ pageCount }};
+            var pageType = "{{ type }}.json"
 
 			$(window).scroll(function() {
 
@@ -161,7 +171,8 @@
 							type: 'POST',
 							url: '/ajax/inbox',
 							data:{
-								page:track_load
+								page:track_load,
+                                type: pageType
 							},
 							dataType: 'json',
 							success: function(result){
@@ -191,6 +202,11 @@
 					}
 				}
 			});
+
+            $('.description').click(function(){
+                var url = $(this).find('.title a').attr('href');
+                window.location.href = url;
+            });
 		});
 	</script>
 </body>

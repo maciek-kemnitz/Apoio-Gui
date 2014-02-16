@@ -3,7 +3,14 @@
 		"silex/silex": "~1.1",
 		"twig/twig": ">=1.8,<2.0-dev",
     "emberlabs/gravatarlib": "dev-master",
-		"google/apiclient": "dev-master"
-	}
+		"google/apiclient": "dev-master",
+        "znarkus/postmark": "dev-master",
+        "swiftmailer/swiftmailer": ">=4.1.2,<4.2-dev"
+	},
+    "autoload": {
+        "classmap": [
+            "Src/"
+        ]
+    }
 }
 

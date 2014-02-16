@@ -69,6 +69,24 @@
 			background-color: #ddf1ff;
 		}
 
+        .attachment {
+            position: relative;
+            border-top: 1px solid #eeeeee;
+            padding-bottom: 20px;
+        }
+
+        .attachment-title {
+            position: absolute;
+            top: -11px;
+            padding: 0px 3px 0px 3px;
+            background: #fff;
+            margin: 0px 0px 0px 10px;
+        }
+
+        .attachment-container {
+            margin-top: 50px;
+        }
+
 
 	</style>
 
@@ -95,7 +113,6 @@
         </div>
         {% for message in conversation.getMessages() %}
             {% if message.show() %}
-
                 <div class="conversation">
 					<div class="row">
 						<div class="span1">
@@ -126,9 +143,37 @@
 							</div>
 						</div>
 					</div>
+                    {% if message.hasAttachments() %}
+                    <div class="attachment-container">
+                        <div class="row">
+                            <div class="attachment span11 offset1">
+                                <span class="attachment-title">attachment ({{ message.getAttachments|length }})</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="span1"></div>
+                            <div class="span11">
+                                {% for attachment in message.getAttachments() %}
+                                    <div class="span1">
+                                        <a href="{{ attachment.getUrl() }}" class="thumbnail" data-toggle="tooltip" title="{{ attachment.getFilename() }}">
+                                            <img src="{{ attachment.getUrl() }}" style="width: 100px; height: 60px;" alt="{{ attachment.getFilename() }}">
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             {% endif %}
         {% endfor %}
+        {#<div>#}
+            {#<form action="/cos" method="POST">#}
+                {#<textarea name="comment"></textarea>#}
+                {#<input type="hidden" name="emailId" value="{{ conversation.getLastEmailyakId() }}">#}
+                {#<button type="submit">Wyślij</button>#}
+            {#</form>#}
+        {#</div>#}
 	</div>
 </body>
 </html>
