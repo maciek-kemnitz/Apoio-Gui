@@ -4,7 +4,7 @@ require_once __DIR__ . '/../vendor/emberlabs/gravatarlib/emberlabs/gravatarlib/G
 
 $app = getAppConfigured();
 session_start();
-
+var_dump($_SERVER["HTTP_HOST"]);exit;
 $app->mount('/ajax', new \Src\Main\Controller\AjaxController());
 $app->mount('/archive', new \Src\Main\Controller\ArchiveController());
 $app->mount('/conversation', new \Src\Main\Controller\ConversationController());
@@ -96,7 +96,7 @@ $app['google_client'] = $client;
 
 if (!isset($_SESSION['access_token']) && ($_SERVER["REQUEST_URI"] != '/login' && false == strstr($_SERVER["REQUEST_URI"], '/oauth2callback')))
 {
-	header( 'Location: http://local.apoio-gui.pl/login' );
+	header( 'Location: /login' );
 	exit;
 }
 elseif (isset($_SESSION['access_token']) && $_SESSION['access_token'])
@@ -129,7 +129,7 @@ elseif (isset($_SESSION['access_token']) && $_SESSION['access_token'])
     catch (Exception $exc)
     {
         unset($_SESSION['access_token']);
-        header( 'Location: http://local.apoio-gui.pl/login' );
+        header( 'Location: /login' );
         exit;
     }
 }
@@ -178,7 +178,7 @@ function prepareGoogleClient()
 
     $client->setClientId('439195701200-lpl78q0mf721f8s13r4evn641uk17b6h.apps.googleusercontent.com');
     $client->setClientSecret('yAAISB1eZLLuubnneke0YMQ8');
-    $client->setRedirectUri('http://local.apoio-gui.pl/oauth2callback');
+    $client->setRedirectUri($_SERVER["HTTP_HOST"].'/oauth2callback');
     $client->setScopes("https://www.googleapis.com/auth/userinfo.email");
     $client->setAccessType('offline');
 
