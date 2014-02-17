@@ -178,7 +178,7 @@ function prepareGoogleClient()
 
     $client->setClientId('439195701200-lpl78q0mf721f8s13r4evn641uk17b6h.apps.googleusercontent.com');
     $client->setClientSecret('yAAISB1eZLLuubnneke0YMQ8');
-    $client->setRedirectUri($_SERVER["HTTP_HOST"].'/oauth2callback');
+    $client->setRedirectUri("http://".$_SERVER["HTTP_HOST"].'/oauth2callback');
     $client->setScopes("https://www.googleapis.com/auth/userinfo.email");
     $client->setAccessType('offline');
 
