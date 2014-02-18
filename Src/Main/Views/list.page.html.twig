@@ -183,7 +183,11 @@
 			var track_load = 1;
 			var loading  = false;
 			var total_groups = {{ pageCount }};
-            var pageType = "{{ type }}.json"
+            var pageType = "{{ type }}.json";
+            var search = '';
+            {% if search is defined %}
+                search = "{{ search }}";
+            {% endif %}
 
 			$(window).scroll(function() {
 
@@ -200,7 +204,8 @@
 							url: '/ajax/inbox',
 							data:{
 								page:track_load,
-                                type: pageType
+                                type: pageType,
+                                search: search
 							},
 							dataType: 'json',
 							success: function(result){

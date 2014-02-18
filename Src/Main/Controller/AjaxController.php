@@ -35,10 +35,18 @@ class AjaxController implements ControllerProviderInterface
         {
             $page = $request->request->get('page');
             $type = $request->request->get('type');
+            $search = $request->request->get('search');
 
             $users = ApoioClient::getUsers();
 
-            list($conversations, ) = ApoioClient::getConversations($type, $users, $page);
+            if ($search)
+            {
+                list($conversations, ) = ApoioClient::getConversationsByQuery($search, $users, $page);
+            }
+            else
+            {
+                list($conversations, ) = ApoioClient::getConversations($type, $users, $page);
+            }
 
             foreach($conversations as $item)
             {

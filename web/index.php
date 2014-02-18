@@ -4,28 +4,27 @@ require_once __DIR__ . '/../vendor/emberlabs/gravatarlib/emberlabs/gravatarlib/G
 
 $app = getAppConfigured();
 session_start();
-var_dump($_SERVER["HTTP_HOST"]);exit;
+
 $app->mount('/ajax', new \Src\Main\Controller\AjaxController());
 $app->mount('/archive', new \Src\Main\Controller\ArchiveController());
 $app->mount('/conversation', new \Src\Main\Controller\ConversationController());
 
-$app->post('/cos', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
+$app->post('/send-reply', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
 {
-    $emailId = $request->request->get("emailId");
+    $messageId = $request->request->get("messageId");
     $comment = $request->request->get("comment");
+    $subject = $request->request->get("subject");
+    $name = $request->request->get("name");
     $message = \Swift_Message::newInstance()
-        ->setSubject('[YourSite] Feedback')
-        ->setFrom(array('noreply@yoursite.com'))
+        ->setSubject($subject)
+        ->setFrom(array('front.office@docplanner.com' => $name))
         ->setTo(array('front.office@docplanner.com'))
         ->setBody($comment);
+
     /** @var Swift_Mime_SimpleHeaderSet $headers */
     $headers = $message->getHeaders();
+    $headers->addTextHeader('In-Reply-To', $messageId);
 
-
-    $headers->addTextHeader('In-Reply-To', $emailId);
-//    $headers->
-//    var_dump($headers);
-//    var_dump($message);
 
     $app['mailer']->send($message);
     if ($app['mailer.initialized']) {
@@ -38,11 +37,20 @@ $app->post('/cos', function (\Symfony\Component\HttpFoundation\Request $request)
 
 $app->get('/', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
 {
+    $search = $request->query->get("search");
+
 	$users = \Src\Main\Lib\ApoioClient::getUsers();
-	list($conversations, $totalCount) = \Src\Main\Lib\ApoioClient::getConversations(\Src\Main\Lib\ApoioClient::ACCESS_POINT_INBOX, $users);
+    if ($search)
+    {
+        list($conversations, $totalCount) = \Src\Main\Lib\ApoioClient::getConversationsByQuery($search, $users);
+    }
+    else
+    {
+        list($conversations, $totalCount) = \Src\Main\Lib\ApoioClient::getConversations(\Src\Main\Lib\ApoioClient::ACCESS_POINT_INBOX, $users);
+    }
 	$pageCount = ceil($totalCount/30);
 
-	return $app['twig']->render('list.page.html.twig', ["items" => $conversations, "users" => $users, "type" => "inbox", "totalCount" => $totalCount, "pageCount" => $pageCount]);
+	return $app['twig']->render('list.page.html.twig', ["items" => $conversations, "users" => $users, "type" => "inbox", "totalCount" => $totalCount, "pageCount" => $pageCount, "search" => $search]);
 })
 ->bind('homepage');
 

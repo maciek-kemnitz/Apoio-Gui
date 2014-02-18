@@ -27,6 +27,7 @@ class Message
     public $metaData;
     public $githubAction;
     public $emailyakId;
+    public $messageId;
 
     /** @var  Attachment[] */
     public $attachments;
@@ -57,10 +58,10 @@ class Message
             }
         }
 
-//        if (isset($message['emailyak_id']))
-//        {
-//            $this->emailyakId = $message['emailyak_id'];
-//        }
+        if (isset($message['message_id']))
+        {
+            $this->messageId = $message['message_id'];
+        }
 
     }
 

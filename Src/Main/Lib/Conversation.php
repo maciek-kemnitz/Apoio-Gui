@@ -25,7 +25,7 @@ class Conversation
     /** @var  \Src\Main\Lib\User[] */
     public $users;
 
-    public $lastEmailyakId;
+    public $lastMessageId;
 
     public $readBy;
 
@@ -33,7 +33,6 @@ class Conversation
 
     public function __construct(array $data, $users)
     {
-//        var_dump($data);
         $this->id = $data['id'];
         $this->author 	= $data['name'];
         $this->subject = $data['subject'];
@@ -71,19 +70,19 @@ class Conversation
             $message = new \Src\Main\Lib\Message((array) $messageData);
             $this->messages[] = $message;
 
-//            if ($message->emailyakId)
-//            {
-//                $this->lastEmailyakId = $message->emailyakId;
-//            }
+            if ($message->messageId)
+            {
+                $this->lastMessageId = $message->messageId;
+            }
         }
     }
 
     /**
      * @return mixed
      */
-    public function getLastEmailyakId()
+    public function getLastMessageId()
     {
-        return $this->lastEmailyakId;
+        return $this->lastMessageId;
     }
 
     /**
