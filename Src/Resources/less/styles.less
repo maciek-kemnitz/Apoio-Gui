@@ -20,14 +20,21 @@
 
 		#user-menu {
 			margin-left: 10px;
-
+			text-align: left;
 			a:hover, a:focus {
 				text-decoration: none;
+			}
+
+			b.caret {
+				margin-left: 5px;
+				color: #999;
 			}
 		}
 	}
 }
-
+.container.main  {
+	box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+}
 .name {
 	font-size: 15px;
 }
@@ -38,6 +45,13 @@
 
 .page-nav-header {
 	padding-bottom: 10px;
+
+	.sub-header {
+		margin-left: 10px;
+		font-size: 15px;
+		color: #bbb;
+		font-weight: normal;
+	}
 }
 
 .title {
@@ -47,7 +61,6 @@
 .body {
 	font-size: 14px;
 }
-
 .description {
 	cursor: hand;
 	margin-left: 0px;
@@ -116,17 +129,16 @@
 	}
 
 	.conversation:hover {
-		border-color: #cccccc;
-		border-width: 1px;
-		border-style: solid;
+		border-bottom: 1px solid #cccccc;
+		border-top: 1px solid #cccccc;
 		background-color: #ecf1f3;
 		margin: 0px -20px;
-		padding-left: 19px;
+		padding-left: 20px;
 	}
 
 	.archived {
 		background-color: #FDFDFD;
-		margin: 0px -19px;
+		margin: 0px -20px;
 		padding: 20px 19px 30px 19px !important;
 	}
 
