@@ -1,4 +1,4 @@
-<div class="row conversation">
+<div class="row conversation {% if item.isArchived()%}archived{% endif %}">
     <div class="span6 description">
         <div class="title">
             <a href="/conversation/{{ item.getId()}}">

@@ -40,16 +40,21 @@ class Conversation
         $this->abstract = $data['abstract'];
         $this->setMessages((array) @$data['messages']);
 
+		$state 		= (array) $data['state'];
+		$this->status 	= $state['state'];
 
-        $state 		= (array) $data['state'];
-        $this->status 	= $state['state'];
-        $this->created_at = $data['created_at'];
+		$this->created_at = $data['created_at'];
         $this->updated_at = $data['updated_at'];
         $this->assigned_to_id = isset($data['assigned_to_id']) ? $data['assigned_to_id'] : null;
         $this->last_reply_at = $data['last_reply_at'];
         $this->users = $users;
         $this->readBy = (array) $data['read_by'];
     }
+
+	public function isArchived()
+	{
+		return $this->status == "closed";
+	}
 
 	/**
 	 * @return mixed
