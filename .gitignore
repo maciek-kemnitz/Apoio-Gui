@@ -1,4 +1,4 @@
-*.css
+web/css/styles.css
 
 # Symfony directories
 vendor/*
