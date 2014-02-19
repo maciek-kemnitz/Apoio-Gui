@@ -3,8 +3,53 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "db9f200816d972171f05f78c74f26425",
+    "hash": "fa86d37c8853ebfa32f84f95b9719905",
     "packages": [
+        {
+            "name": "darklow/ff-silex-less-provider",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/darklow/ff-silex-less-provider.git",
+                "reference": "e9b4c1f431f0a8f051c7e7d0fd6037b82c61024f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/darklow/ff-silex-less-provider/zipball/e9b4c1f431f0a8f051c7e7d0fd6037b82c61024f",
+                "reference": "e9b4c1f431f0a8f051c7e7d0fd6037b82c61024f",
+                "shasum": ""
+            },
+            "require": {
+                "leafo/lessphp": "~0.4",
+                "php": ">=5.3.0",
+                "silex/silex": "~1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "FF": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kaspars Sprogis",
+                    "email": "darklow@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Simple less php service provider for Silex",
+            "keywords": [
+                "less",
+                "lessphp",
+                "provider",
+                "silex"
+            ],
+            "time": "2013-11-25 07:15:51"
+        },
         {
             "name": "emberlabs/gravatarlib",
             "version": "dev-master",
@@ -61,12 +106,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/google/google-api-php-client.git",
-                "reference": "bd1bdb956615b61f64589dcc63a37dd2d24e150e"
+                "reference": "4a2846270f5710beaf9a437a4dfdef8d1881a54b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/bd1bdb956615b61f64589dcc63a37dd2d24e150e",
-                "reference": "bd1bdb956615b61f64589dcc63a37dd2d24e150e",
+                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/4a2846270f5710beaf9a437a4dfdef8d1881a54b",
+                "reference": "4a2846270f5710beaf9a437a4dfdef8d1881a54b",
                 "shasum": ""
             },
             "require": {
@@ -90,7 +135,48 @@
             "keywords": [
                 "google"
             ],
-            "time": "2014-02-12 05:16:34"
+            "time": "2014-02-19 05:23:55"
+        },
+        {
+            "name": "leafo/lessphp",
+            "version": "v0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/leafo/lessphp.git",
+                "reference": "51f3f06f0fe78a722dabfd14578444bdd078d9de"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/leafo/lessphp/zipball/51f3f06f0fe78a722dabfd14578444bdd078d9de",
+                "reference": "51f3f06f0fe78a722dabfd14578444bdd078d9de",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "lessc.inc.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT",
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Leaf Corcoran",
+                    "email": "leafot@gmail.com",
+                    "homepage": "http://leafo.net"
+                }
+            ],
+            "description": "lessphp is a compiler for LESS written in PHP.",
+            "homepage": "http://leafo.net/lessphp/",
+            "time": "2013-08-09 17:09:19"
         },
         {
             "name": "pimple/pimple",
@@ -725,6 +811,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "darklow/ff-silex-less-provider": 20,
         "emberlabs/gravatarlib": 20,
         "google/apiclient": 20,
         "znarkus/postmark": 20

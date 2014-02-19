@@ -2,7 +2,13 @@
 require_once __DIR__.'/../vendor/autoload.php';
 require_once __DIR__ . '/../vendor/emberlabs/gravatarlib/emberlabs/gravatarlib/Gravatar.php';
 
+// Register FF Silex Less service provider
 $app = getAppConfigured();
+$app->register(new \FF\ServiceProvider\LessServiceProvider(), array(
+	'less.sources'     => array(__DIR__.'/../Src/Resources/less/styles.less'),
+	'less.target'      => __DIR__.'/../web/css/styles.css',
+	'less.target_mode' => 0775,));
+
 session_start();
 
 $app->mount('/ajax', new \Src\Main\Controller\AjaxController());

@@ -1,8 +1,8 @@
 <div class="top container">
 	<div id="nav" class="row">
-		<div class="span4">
+		<div class="span4 search">
 			<form class="form-search" method="GET">
-			<input type="text" id="search" class="search-query" name="search" placeholder="Search issues">
+			<input type="text" class="search-query" name="search" placeholder="Search issues">
 			</form>
 		</div>
 		{#<div class="span2 offset3">#}
@@ -10,8 +10,8 @@
 				{#<button class="btn btn-primary btn-round" type="submit">Compose</button>#}
 			{#</form>#}
 		{#</div>#}
-		<div class="span3 offset5">
-			<img class="user-image" src="{{ gravatar.get(user_email)|raw }}" class="img-circle">
+		<div class="span3 offset5 avatar">
+			<img class="user-image circular" src="{{ gravatar.get(user_email)|raw }}" class="img-circle">
 			<div id="user-menu" class="btn-group">
 
 				<a class="dropdown-toggle muted" role="button" data-toggle="dropdown" href="#">

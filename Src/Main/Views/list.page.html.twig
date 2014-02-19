@@ -23,42 +23,7 @@
             </div>
         </div>
 		{% for item in items %}
-			<div class="row conversation">
-				<div class="span6 description">
-                    <div class="title">
-                        <a href="/conversation/{{ item.getId()}}">
-                            {% if item.getSubject != '' %}
-                                {{ item.getSubject() }}
-                            {% else %}
-                                {{ item.getAbstract() }}
-                            {% endif %}
-                        </a>
-                    </div>
-                    {% if item.getSubject != '' %}
-                        <div class="body muted">
-                            {{ item.getAbstract() }}
-                        </div>
-                    {% endif %}
-                    {% if item.hasBeenRead() %}
-                        <span class="read"></span>
-                    {% else %}
-                        <span class="unread"></span>
-                    {% endif %}
-                </div>
-                <div class="span1 offset1">
-                    {% if item.getAssignedUser() is not null %}
-                        <a href="#" data-toggle="tooltip" title="Assigned to {{ item.getAssignedTo() }}">
-                            <div class="circular" style="background: url({{ item.getAssignedToAvatar()|raw }}); background-size: 50px 50px;"></div>
-                        </a>
-                    {% endif %}
-                </div>
-                <div class="span2 offset1">
-                    {{ item.getRealOwner() }}
-                    <br>
-                    <small class="muted">{{ item.getPastString() }}</small>
-                </div>
-			</div>
-
+			{% include 'list-item.block.html.twig' %}
 		{% else %}
 			Placeholder for empty list
 		{% endfor %}
