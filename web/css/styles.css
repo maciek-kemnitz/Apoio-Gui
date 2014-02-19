@@ -4,7 +4,13 @@
   width:300px;
   height:30px;
 }
-.user-image { height:30px; }
+.top .avatar { text-align:right; }
+.top .avatar img.user-image {
+  height:30px;
+  width:30px;
+}
+.top .avatar #user-menu { margin-left:10px; }
+.top .avatar #user-menu a:hover, .top .avatar #user-menu a:focus { text-decoration:none; }
 .name { font-size:15px; }
 .name .caret { vertical-align:middle; }
 .page-nav-header { padding-bottom:10px; }
@@ -31,7 +37,7 @@
   -moz-box-shadow:0 0 4px rgba(0,0,0,0.8);
 }
 .unread {
-  background:url('../../../web/img/unread.png');
+  background:url('../img/unread.png');
   background-size:15px 15px;
   width:15px;
   height:15px;
@@ -40,7 +46,7 @@
   left:-2px;
 }
 .read {
-  background:url('../../../web/img/read.png');
+  background:url('../img/read.png');
   background-size:15px 15px;
   width:15px;
   height:15px;

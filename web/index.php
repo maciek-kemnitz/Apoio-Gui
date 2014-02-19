@@ -119,7 +119,10 @@ elseif (isset($_SESSION['access_token']) && $_SESSION['access_token'])
         $display_name = explode("@",$email);
         $app['user_email'] = $email;
         $app['twig']->addGlobal('user_email', $email);
-        $app['twig']->addGlobal('display_name', $display_name[0]);
+		$displayName = count($displayName = explode('.', $display_name[0])) == 2 ? ucwords(implode(" ", $displayName)) : $display_name[0];
+
+        $app['twig']->addGlobal('display_name', $displayName);
+
     }
     catch (Exception $exc)
     {
