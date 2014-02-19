@@ -8,6 +8,7 @@ session_start();
 $app->mount('/ajax', new \Src\Main\Controller\AjaxController());
 $app->mount('/archive', new \Src\Main\Controller\ArchiveController());
 $app->mount('/conversation', new \Src\Main\Controller\ConversationController());
+$app->mount('/', new \Src\Main\Controller\InboxController());
 
 $app->post('/send-reply', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
 {
@@ -34,26 +35,6 @@ $app->post('/send-reply', function (\Symfony\Component\HttpFoundation\Request $r
     return new \Symfony\Component\HttpFoundation\RedirectResponse('/');
 
 });
-
-$app->get('/', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
-{
-    $search = $request->query->get("search");
-
-	$users = \Src\Main\Lib\ApoioClient::getUsers();
-    if ($search)
-    {
-        list($conversations, $totalCount) = \Src\Main\Lib\ApoioClient::getConversationsByQuery($search, $users);
-    }
-    else
-    {
-        list($conversations, $totalCount) = \Src\Main\Lib\ApoioClient::getConversations(\Src\Main\Lib\ApoioClient::ACCESS_POINT_INBOX, $users);
-    }
-	$pageCount = ceil($totalCount/30);
-
-	return $app['twig']->render('list.page.html.twig', ["items" => $conversations, "users" => $users, "type" => "inbox", "totalCount" => $totalCount, "pageCount" => $pageCount, "search" => $search]);
-})
-->bind('homepage');
-
 
 $app->match('/oauth2callback', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
 {
