@@ -6,7 +6,10 @@
 
 # this is the template - should be copied to Src/Config/config-env.php
 
-define('GOOGLE_API_CLIENT_ID','');
-define('GOOGLE_API_CLIENT_SECRET','');
+define('GOOGLE_API_CLIENT_ID', '');
+define('GOOGLE_API_CLIENT_SECRET', '');
+
+define('SWIFT_MAILER_USERNAME', '');
+define('SWIFT_MAILER_PASSWORD', '');
 
 

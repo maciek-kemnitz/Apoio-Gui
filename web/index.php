@@ -155,8 +155,8 @@ function getAppConfigured()
     $app['swiftmailer.options'] = array(
         'host' => 'ssl://smtp.gmail.com',
         'port' => '465',
-        'username' => 'front.office@docplanner.com',
-        'password' => 'Front1234',
+        'username' => SWIFT_MAILER_USERNAME,
+        'password' => SWIFT_MAILER_PASSWORD,
         'encryption' => null,
         'auth_mode' => null
     );
