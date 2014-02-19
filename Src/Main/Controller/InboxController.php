@@ -6,6 +6,7 @@ use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Src\Main\Lib\ApoioClient;
+use Src\Main\Lib\ListHelper;
 use Symfony\Component\HttpFoundation\Request;
 
 class InboxController implements ControllerProviderInterface
@@ -19,17 +20,26 @@ class InboxController implements ControllerProviderInterface
 			$search = $request->query->get("search");
 
 			$users = \Src\Main\Lib\ApoioClient::getUsers();
+			$helper = new ListHelper($users);
+
 			if ($search)
 			{
-				list($conversations, $totalCount) = \Src\Main\Lib\ApoioClient::getConversationsByQuery($search, $users);
+				$helper->initSearchList($search);
 			}
 			else
 			{
-				list($conversations, $totalCount) = \Src\Main\Lib\ApoioClient::getConversations(\Src\Main\Lib\ApoioClient::ACCESS_POINT_INBOX, $users);
+				$helper->initMixedList();
 			}
-			$pageCount = ceil($totalCount/30);
 
-			return $app['twig']->render('list.page.html.twig', ["items" => $conversations, "users" => $users, "type" => "inbox", "totalCount" => $totalCount, "pageCount" => $pageCount, "search" => $search]);
+			$params = [
+				"helper" => $helper,
+				"type" => "inbox",
+				"totalCount" => 22,
+				"pageCount" => 3,
+				"search" => $search
+			];
+
+			return $app['twig']->render('list.page.html.twig', $params);
 		});
 
 		return $controllers;

@@ -11,18 +11,18 @@
 	<div id="conversation-list" class="well container">
         <div class="row page-nav-header">
             <div class="span4">
-                <h3>{{ type|capitalize }} <small style="font-size: 18">{{ totalCount }} conversations</small></h3>
+                <h3>{{ type|capitalize }} <small style="font-size: 18">{{ helper.getTotalCount() }} conversations</small></h3>
             </div>
             <div class="span1 offset7">
 				{% if type == "archive" %}
 					<a href="/">inbox</a>
 				{% else %}
-					<a href="/archive">archive</a>
+					<a href="/?search={{ user_email }}">my list</a>
 				{% endif %}
 
             </div>
         </div>
-		{% for item in items %}
+		{% for item in helper.getList() %}
 			{% include 'list-item.block.html.twig' %}
 		{% else %}
 			Placeholder for empty list
@@ -36,9 +36,15 @@
 		$(document).ready(function(){
 
 			var track_load = 1;
+			var inbox_track_load = 1;
+			var archive_track_load = 0;
+			var search_track_load = 1;
 			var loading  = false;
-			var total_groups = {{ pageCount }};
-            var pageType = "{{ type }}.json";
+			var inboxCount = {{ helper.inboxCount() }};
+			var archiveCount = {{ helper.archiveCount() }};
+			var searchCount = {{ helper.searchCount() }};
+			var total_groups = inboxCount + archiveCount;
+
             var search = '';
             {% if search is defined %}
                 search = "{{ search }}";
@@ -54,11 +60,31 @@
 						$('.animation_image').show();
 						track_load++;
 
+						var tmp_track_load = track_load;
+
+						if (search)
+						{
+							search_track_load++;
+							tmp_track_load = search_track_load;
+						}
+						else if (inbox_track_load < inboxCount)
+						{
+							pageType = "inbox";
+							inbox_track_load++;
+							tmp_track_load = inbox_track_load;
+						}
+						else if (archive_track_load < archiveCount)
+						{
+							pageType = "archive";
+							archive_track_load++;
+							tmp_track_load = archive_track_load;
+						}
+
 						$.ajax({
 							type: 'POST',
 							url: '/ajax/inbox',
 							data:{
-								page:track_load,
+								page: tmp_track_load,
                                 type: pageType,
                                 search: search
 							},
@@ -77,7 +103,7 @@
 									$("#conversation-list").append(loader);
 
 
-									track_load++;
+//									track_load++;
 									loading = false;
 								}
 								else

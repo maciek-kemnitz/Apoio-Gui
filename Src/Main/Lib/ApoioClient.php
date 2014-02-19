@@ -49,8 +49,8 @@ class ApoioClient
             foreach($output['results'] as $entry)
             {
                 $item = new Conversation((array) $entry, $users);
-				$tmpConversation = ApoioClient::getConversationById($item->getId());
-				$item->realOwner = $tmpConversation->getRealOwner();
+//				$tmpConversation = ApoioClient::getConversationById($item->getId());
+//				$item->realOwner = $tmpConversation->getRealOwner();
                 $items[] = $item;
             }
         }
