@@ -28,6 +28,7 @@ class Conversation
     public $lastMessageId;
 
     public $readBy;
+	public $realOwner;
 
 
 
@@ -50,6 +51,14 @@ class Conversation
         $this->readBy = (array) $data['read_by'];
     }
 
+	/**
+	 * @return mixed
+	 */
+	public function getRealOwner()
+	{
+		return $this->realOwner;
+	}
+
     /**
      * @return array
      */
@@ -65,15 +74,23 @@ class Conversation
 
     protected function setMessages(array $messages)
     {
+		$count = 1;
         foreach($messages as $messageData)
         {
             $message = new \Src\Main\Lib\Message((array) $messageData);
             $this->messages[] = $message;
 
+			if ($count == 1)
+			{
+				$this->realOwner = $message->getAuthorName();
+			}
+
             if ($message->messageId)
             {
                 $this->lastMessageId = $message->messageId;
             }
+
+			$count++;
         }
     }
 
