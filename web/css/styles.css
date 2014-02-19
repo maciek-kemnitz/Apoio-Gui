@@ -9,11 +9,25 @@
   height:30px;
   width:30px;
 }
-.top .avatar #user-menu { margin-left:10px; }
+.top .avatar #user-menu {
+  margin-left:10px;
+  text-align:left;
+}
 .top .avatar #user-menu a:hover, .top .avatar #user-menu a:focus { text-decoration:none; }
+.top .avatar #user-menu b.caret {
+  margin-left:5px;
+  color:#999;
+}
+.container.main { box-shadow:0 0 4px rgba(0,0,0,0.15); }
 .name { font-size:15px; }
 .name .caret { vertical-align:middle; }
 .page-nav-header { padding-bottom:10px; }
+.page-nav-header .sub-header {
+  margin-left:10px;
+  font-size:15px;
+  color:#bbb;
+  font-weight:normal;
+}
 .title { font-size:17px; }
 .body { font-size:14px; }
 .description {
@@ -63,16 +77,15 @@
   margin-left:0px;
 }
 #conversation-list .conversation:hover {
-  border-color:#cccccc;
-  border-width:1px;
-  border-style:solid;
+  border-bottom:1px solid #cccccc;
+  border-top:1px solid #cccccc;
   background-color:#ecf1f3;
   margin:0px -20px;
-  padding-left:19px;
+  padding-left:20px;
 }
 #conversation-list .archived {
   background-color:#FDFDFD;
-  margin:0px -19px;
+  margin:0px -20px;
   padding:20px 19px 30px 19px !important;
 }
 #conversation-container { background-color:#ffffff; }
