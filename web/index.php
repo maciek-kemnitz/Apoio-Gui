@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/../vendor/autoload.php';
 require_once __DIR__ . '/../vendor/emberlabs/gravatarlib/emberlabs/gravatarlib/Gravatar.php';
+require_once __DIR__.'/../Src/Config/config.php';
 
 // Register FF Silex Less service provider
 $app = getAppConfigured();
@@ -52,7 +53,7 @@ $app->match('/oauth2callback', function (\Symfony\Component\HttpFoundation\Reque
 		$client->authenticate($_GET['code']);
 		$_SESSION['access_token'] = $client->getAccessToken();
 
-		$url = $app['url_generator']->generate('homepage');
+		$url = '/';
 		return new \Symfony\Component\HttpFoundation\RedirectResponse($url);
 	}
 	else
@@ -174,8 +175,8 @@ function prepareGoogleClient()
 {
     $client = new Google_Client();
 
-    $client->setClientId('439195701200-lpl78q0mf721f8s13r4evn641uk17b6h.apps.googleusercontent.com');
-    $client->setClientSecret('yAAISB1eZLLuubnneke0YMQ8');
+	$client->setClientId(GOOGLE_API_CLIENT_ID);
+	$client->setClientSecret(GOOGLE_API_CLIENT_SECRET);
     $client->setRedirectUri("http://".$_SERVER["HTTP_HOST"].'/oauth2callback');
     $client->setScopes("https://www.googleapis.com/auth/userinfo.email");
     $client->setAccessType('offline');
