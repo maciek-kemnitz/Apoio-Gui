@@ -1,4 +1,5 @@
 web/css/styles.css
+Src/Config/config-env.php
 
 # Symfony directories
 vendor/*
