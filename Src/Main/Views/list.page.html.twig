@@ -12,20 +12,22 @@
 	<div id="conversation-list" class="well container main">
         <div class="row page-nav-header">
             <div class="span4">
-                <h3>{% if search %}Search {% else %}Inbox {% endif %}<span class="sub-header">{{ helper.getTotalCount() }} conversations</span></h3>
+                <h3>{% if myTickets %}My tickets {% elseif search %}Search {% else %}All tickets {% endif %}<span class="sub-header">{{ helper.getTotalCount() }} conversations</span></h3>
             </div>
             <div class="span2 offset6" style="font-size: 13px; color: rgb(153, 153, 153); position: relative; top: 20px;">
-				{% if search %}
-					<span>my tickets</span>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="/">all tickets</a>
-				{% else %}
-					<a href="/?search={{ user_email }}">my tickets</a>&nbsp;&nbsp;|&nbsp;&nbsp;<span>all tickets</span>
+				{% if myTickets %}
+					<span>my tickets</span>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="/all-tickets">all tickets</a>
+				{% elseif search %}
+                    <a href="/my-tickets">my tickets</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="/all-tickets">all tickets</a>
+                {% else %}
+					<a href="/my-tickets">my tickets</a>&nbsp;&nbsp;|&nbsp;&nbsp;<span>all tickets</span>
 				{% endif %}
             </div>
         </div>
 		{% for item in helper.getList() %}
 			{% include 'list-item.block.html.twig' %}
 		{% else %}
-			Placeholder for empty list
+			{#Placeholder for empty list#}
 		{% endfor %}
 		<div class="animation_image" style="display:none" align="center">
 			<img src="{{ app.request.basepath }}/img/ajax-loader.gif">

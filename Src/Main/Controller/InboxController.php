@@ -18,6 +18,18 @@ class InboxController implements ControllerProviderInterface
 		$controllers->get('/', function (Request $request) use ($app)
 		{
 			$search = $request->query->get("search");
+			$myTickets = false;
+
+			if (isset($_SESSION['my_tickets']) && $_SESSION['my_tickets'])
+			{
+				$tmp = '';
+				if ($search)
+				{
+					$tmp = " ".$search;
+				}
+				$search = $app['user_email'] . $tmp;
+				$myTickets = true;
+			}
 
 			$users = \Src\Main\Lib\ApoioClient::getUsers();
 			$helper = new ListHelper($users);
@@ -36,7 +48,8 @@ class InboxController implements ControllerProviderInterface
 				"type" => "inbox",
 				"totalCount" => 22,
 				"pageCount" => 3,
-				"search" => $search
+				"search" => $search,
+				"myTickets" => $myTickets
 			];
 
 			return $app['twig']->render('list.page.html.twig', $params);

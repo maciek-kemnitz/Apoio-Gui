@@ -16,6 +16,8 @@ $app->mount('/ajax', new \Src\Main\Controller\AjaxController());
 $app->mount('/archive', new \Src\Main\Controller\ArchiveController());
 $app->mount('/conversation', new \Src\Main\Controller\ConversationController());
 $app->mount('/', new \Src\Main\Controller\InboxController());
+$app->mount('/my-tickets', new \Src\Main\Controller\MyTicketsController());
+$app->mount('/all-tickets', new \Src\Main\Controller\AllTicketsController());
 
 $app->post('/send-reply', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
 {
@@ -52,7 +54,7 @@ $app->match('/oauth2callback', function (\Symfony\Component\HttpFoundation\Reque
 
 		$client->authenticate($_GET['code']);
 		$_SESSION['access_token'] = $client->getAccessToken();
-
+		$_SESSION['my_tickets'] = true;
 		$url = '/';
 		return new \Symfony\Component\HttpFoundation\RedirectResponse($url);
 	}

@@ -69,10 +69,10 @@ class ApoioClient
     public static function getConversationsByQuery($query, $users, $page=1)
     {
         $ch = curl_init();
-
+		$query = urlencode($query);
         curl_setopt($ch, CURLOPT_URL, self::ACCESS_POINT_API . self::ACCESS_POINT_SEARCH . "?access_token=" . self::ACCESS_TOKEN . "&query=". $query ."&page=" . $page);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-//var_dump(self::ACCESS_POINT_API . self::ACCESS_POINT_SEARCH . "?access_token=" . self::ACCESS_TOKEN . "&query=". $query ."&page=" . $page);
+
         $output = curl_exec($ch);
 
         $output = (array) json_decode($output);
