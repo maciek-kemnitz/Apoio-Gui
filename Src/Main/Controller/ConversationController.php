@@ -32,8 +32,10 @@ class ConversationController implements ControllerProviderInterface
         $controllers->get('/{id}', function ($id) use ($app)
         {
             $conversation = ApoioClient::getConversationById($id);
+			$request = $app['request'];
+			$referer = $request->headers->get('referer');
 
-            return $app['twig']->render('conversation.page.html.twig', ["conversation" => $conversation]);
+            return $app['twig']->render('conversation.page.html.twig', ["conversation" => $conversation, "referer" => $referer]);
         });
 
         return $controllers;

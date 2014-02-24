@@ -12,7 +12,7 @@
         <div id="conversation-header">
             <div class="row">
                 <div class="span4">
-                    <a href="/">← back to inbox</a>
+                    <a href="{{ referer }}">← back to the past</a>
                 </div>
                 <div class="span3 offset5">
                     {% if conversation.getAssignedUser() is not null %}
