@@ -71,6 +71,11 @@ $app->match('/login', function (\Symfony\Component\HttpFoundation\Request $reque
 
     $params = [];
 	$params['authUrl'] = $authUrl;
+	if (isset($_SESSION['wrongDomain']) && $_SESSION['wrongDomain'])
+	{
+		$params['wrongDomain'] = true;
+		unset($_SESSION['wrongDomain']);
+	}
 
     return $app['twig']->render('login.page.html.twig', $params);
 })
@@ -104,20 +109,24 @@ elseif (isset($_SESSION['access_token']) && $_SESSION['access_token'])
     {
         $client->refreshToken($tokenArray['refresh_token']);
     }
-////    $client->verifyIdToken($_SESSION['access_token']);
-////    $plus = new Google_Service_Plus($client);
-//    var_dump((array)json_decode($_SESSION["access_token"]));
-//    exit;
 
     try
     {
-//        var_dump($_SESSION['access_token']);
         $client->setAccessToken($_SESSION['access_token']);
 
         $plus = new Google_Service_Plus($client);
         $emails = $plus->people->get("me")->getEmails();
         $email = $emails[0]['value'];
-        $display_name = explode("@",$email);
+
+		if (strpos($email, "docplanner.com") == false)
+		{
+			unset($_SESSION['access_token']);
+			$_SESSION['wrongDomain'] = true;
+			header( 'Location: /login' );
+			exit;
+		}
+
+		$display_name = explode("@",$email);
         $app['user_email'] = $email;
         $app['twig']->addGlobal('user_email', $email);
 		$displayName = count($displayName = explode('.', $display_name[0])) == 2 ? ucwords(implode(" ", $displayName)) : $display_name[0];
