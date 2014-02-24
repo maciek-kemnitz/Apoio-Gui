@@ -14,11 +14,11 @@
             <div class="span4">
                 <h3>{% if search %}Search {% else %}Inbox {% endif %}<span class="sub-header">{{ helper.getTotalCount() }} conversations</span></h3>
             </div>
-            <div class="span1 offset7">
+            <div class="span2 offset6" style="font-size: 13px; color: rgb(153, 153, 153); position: relative; top: 20px;">
 				{% if search %}
-					<a href="/">inbox</a>
+					<span>my tickets</span>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="/">all tickets</a>
 				{% else %}
-					<a href="/?search={{ user_email }}">my list</a>
+					<a href="/?search={{ user_email }}">my tickets</a>&nbsp;&nbsp;|&nbsp;&nbsp;<span>all tickets</span>
 				{% endif %}
             </div>
         </div>

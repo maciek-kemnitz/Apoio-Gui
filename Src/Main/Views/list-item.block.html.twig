@@ -21,11 +21,9 @@
         {% endif %}
     </div>
     <div class="span1 offset1">
-        {% if item.getAssignedUser() is not null %}
-            <a href="#" data-toggle="tooltip" title="Assigned to {{ item.getAssignedTo() }}">
-                <div class="circular" style="background: url({{ item.getAssignedToAvatar()|raw }}); background-size: 50px 50px;"></div>
-            </a>
-        {% endif %}
+		<a href="#" data-toggle="tooltip" title="Assigned to {{ item.getAssignedTo() }}">
+			<div class="circular" style="background: url({{ item.getAssignedToAvatar()|raw }}); background-size: 50px 50px;"></div>
+		</a>
     </div>
     <div class="span2 offset1">
         {{ item.getAuthor() }}

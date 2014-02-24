@@ -241,13 +241,21 @@ class Conversation
             }
         }
 
-        return "";
+        return "Front Office";
     }
 
     public function getAssignedToAvatar()
     {
         $user = $this->users[$this->assigned_to_id];
-        return $user->getAvatar();
+
+		if ($user)
+		{
+			return $user->getAvatar();
+		}
+		else
+		{
+			return 'img/house.gif';
+		}
     }
 
     public function getAssignedUser()
