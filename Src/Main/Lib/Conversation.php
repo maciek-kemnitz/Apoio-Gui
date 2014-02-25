@@ -47,7 +47,8 @@ class Conversation
 		$this->created_at = $data['created_at'];
         $this->updated_at = $data['updated_at'];
         $this->assigned_to_id = isset($data['assigned_to_id']) ? $data['assigned_to_id'] : null;
-        $this->last_reply_at = $data['last_reply_at'];
+		$time = strtotime($data['last_reply_at']);
+		$this->last_reply_at = date('Y-m-d H:i:s', $time);
         $this->users = $users;
         $this->readBy = (array) $data['read_by'];
     }

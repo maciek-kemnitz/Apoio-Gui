@@ -48,6 +48,33 @@ class Database
 		]);
 	}
 
+	public static function addConversation(Conversation $conversation)
+	{
+		self::connect();
+		$stm = self::$db->prepare('INSERT INTO `conversation` VALUES (:id, :real_owner, :message_count, :last_reply_at) ON DUPLICATE KEY UPDATE last_reply_at=VALUES(last_reply_at), message_count=VALUES(message_count)');
+
+		$stm->execute([
+			"id" => $conversation->getId(),
+			"real_owner" => $conversation->getRealOwner(),
+			"message_count" => $conversation->msgCount,
+			"last_reply_at" => $conversation->getLastReplyAt()
+		]);
+	}
+
+	/**
+	 * @param $id
+	 * @return mixed
+	 */
+	public static function  getAdditionalConversationInfoById($id)
+	{
+		self::connect();
+
+		$conversationArray = self::$db->query('SELECT * FROM conversation WHERE id = '. $id)->fetch();
+
+		return $conversationArray;
+	}
+
+
 	protected function connect()
 	{
 		if(null === self::$db)

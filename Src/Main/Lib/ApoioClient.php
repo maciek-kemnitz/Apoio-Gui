@@ -49,9 +49,22 @@ class ApoioClient
             foreach($output['results'] as $entry)
             {
                 $item = new Conversation((array) $entry, $users);
-				$tmpConversation = ApoioClient::getConversationById($item->getId());
-//				$item->realOwner = $tmpConversation->getRealOwner();
-//				$item->msgCount = count($tmpConversation->getMessages());
+				$conversationInfo = Database::getAdditionalConversationInfoById($item->getId());
+
+				if (!is_array($conversationInfo) || (strtotime($conversationInfo['last_reply_at']) < strtotime($item->getLastReplyAt())))
+				{
+					$tmpConversation = ApoioClient::getConversationById($item->getId());
+					$item->realOwner = $tmpConversation->getRealOwner();
+					$item->msgCount = count($tmpConversation->getMessages());
+					Database::addConversation($item);
+				}
+				else
+				{
+					$item->msgCount = $conversationInfo['message_count'];
+					$item->realOwner = $conversationInfo['real_owner'];
+				}
+
+
                 $items[] = $item;
             }
         }
@@ -61,12 +74,13 @@ class ApoioClient
         return [$items, $totalCount];
     }
 
-    /**
-     * @param $type
-     * @param $users
-     * @param int $page
-     * @return Conversation[]
-     */
+	/**
+	 * @param $query
+	 * @param $users
+	 * @param int $page
+	 * @internal param $type
+	 * @return Conversation[]
+	 */
     public static function getConversationsByQuery($query, $users, $page=1)
     {
         $ch = curl_init();
@@ -88,6 +102,22 @@ class ApoioClient
             foreach($output['results'] as $entry)
             {
                 $item = new Conversation((array) $entry, $users);
+
+				$conversationInfo = Database::getAdditionalConversationInfoById($item->getId());
+
+				if (!is_array($conversationInfo) || (strtotime($conversationInfo['last_reply_at']) < strtotime($item->getLastReplyAt())))
+				{
+					$tmpConversation = ApoioClient::getConversationById($item->getId());
+					$item->realOwner = $tmpConversation->getRealOwner();
+					$item->msgCount = count($tmpConversation->getMessages());
+					Database::addConversation($item);
+				}
+				else
+				{
+					$item->msgCount = $conversationInfo['message_count'];
+					$item->realOwner = $conversationInfo['real_owner'];
+				}
+
                 $items[] = $item;
             }
         }
