@@ -26,6 +26,7 @@ class Conversation
     public $users;
 
     public $lastMessageId;
+	public $msgCount;
 
     public $readBy;
 	public $realOwner;
@@ -106,6 +107,14 @@ class Conversation
     {
         return $this->lastMessageId;
     }
+
+	/**
+	 * @return mixed
+	 */
+	public function getMsgCount()
+	{
+		return $this->msgCount;
+	}
 
     /**
      * @return mixed

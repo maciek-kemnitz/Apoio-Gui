@@ -106,12 +106,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/google/google-api-php-client.git",
-                "reference": "4a2846270f5710beaf9a437a4dfdef8d1881a54b"
+                "reference": "6cadc6ced63726d86004370ab90605b034c12ba4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/4a2846270f5710beaf9a437a4dfdef8d1881a54b",
-                "reference": "4a2846270f5710beaf9a437a4dfdef8d1881a54b",
+                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/6cadc6ced63726d86004370ab90605b034c12ba4",
+                "reference": "6cadc6ced63726d86004370ab90605b034c12ba4",
                 "shasum": ""
             },
             "require": {
@@ -135,7 +135,7 @@
             "keywords": [
                 "google"
             ],
-            "time": "2014-02-19 05:23:55"
+            "time": "2014-02-25 05:30:18"
         },
         {
             "name": "leafo/lessphp",

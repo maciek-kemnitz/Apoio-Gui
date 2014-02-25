@@ -1,5 +1,5 @@
 <div class="row conversation {% if item.isArchived()%}archived{% endif %}">
-    <div class="span6 description">
+	<div class="span6 description">
         <div class="title">
             <a href="/conversation/{{ item.getId()}}">
                 {% if item.getSubject != '' %}
@@ -8,6 +8,9 @@
                     {{ item.getAbstract() }}
                 {% endif %}
             </a>
+	        {% if(item.getMsgCount > 1) %}
+	            <div class="replies">{{ item.getMsgCount }}</div>
+	        {% endif %}
         </div>
         {% if item.getSubject != '' %}
             <div class="body muted">
@@ -21,11 +24,11 @@
         {% endif %}
     </div>
     <div class="span1 offset1">
-		<a href="#" data-toggle="tooltip" title="Assigned to {{ item.getAssignedTo() }}">
+		<a href="#" class="tp" data-toggle="tooltip" title="Assigned to {{ item.getAssignedTo() }}">
 			<div class="circular" style="background: url({{ item.getAssignedToAvatar()|raw }}); background-size: 50px 50px;"></div>
 		</a>
     </div>
-    <div class="span2 offset1">
+    <div class="span2 offset1 author">
         {{ item.getAuthor() }}
         <br>
         <small class="muted">{{ item.getPastString() }}</small>
