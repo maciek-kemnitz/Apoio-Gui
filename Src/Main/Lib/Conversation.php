@@ -36,7 +36,7 @@ class Conversation
     public function __construct(array $data, $users)
     {
         $this->id = $data['id'];
-        $this->author 	= $data['name'];
+        $this->author 	= isset($data['name']) ? $data['name'] : null;
         $this->subject = $data['subject'];
         $this->abstract = $data['abstract'];
         $this->setMessages((array) @$data['messages']);

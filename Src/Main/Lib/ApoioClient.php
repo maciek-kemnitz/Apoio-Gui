@@ -50,8 +50,8 @@ class ApoioClient
             {
                 $item = new Conversation((array) $entry, $users);
 				$tmpConversation = ApoioClient::getConversationById($item->getId());
-				$item->realOwner = $tmpConversation->getRealOwner();
-				$item->msgCount = count($tmpConversation->getMessages());
+//				$item->realOwner = $tmpConversation->getRealOwner();
+//				$item->msgCount = count($tmpConversation->getMessages());
                 $items[] = $item;
             }
         }

@@ -6,6 +6,7 @@ use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Src\Main\Lib\ApoioClient;
+use Src\Main\Lib\Database;
 use Src\Main\Lib\ListHelper;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -31,7 +32,7 @@ class InboxController implements ControllerProviderInterface
 				$myTickets = true;
 			}
 
-			$users = \Src\Main\Lib\ApoioClient::getUsers();
+			$users = $app['users'];
 			$helper = new ListHelper($users);
 
 			if ($search)

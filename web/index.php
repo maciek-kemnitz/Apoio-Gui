@@ -18,6 +18,11 @@ $app->mount('/conversation', new \Src\Main\Controller\ConversationController());
 $app->mount('/', new \Src\Main\Controller\InboxController());
 $app->mount('/my-tickets', new \Src\Main\Controller\MyTicketsController());
 $app->mount('/all-tickets', new \Src\Main\Controller\AllTicketsController());
+$app->mount('/update-users', new \Src\Main\Controller\UpdateUsersController());
+
+
+
+
 
 $app->post('/send-reply', function (\Symfony\Component\HttpFoundation\Request $request) use ($app)
 {
@@ -175,6 +180,9 @@ function getAppConfigured()
     $app->register(new Silex\Provider\SwiftmailerServiceProvider());
 
     $app['twig']->addGlobal('gravatar', \Src\Main\Lib\GravatarClient::getGravatar());
+
+	$users = \Src\Main\Lib\Database::getUsers();
+	$app['users'] = $users;
 
     return $app;
 }

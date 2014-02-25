@@ -32,7 +32,7 @@ class ArchiveController implements ControllerProviderInterface
 
         $controllers->get('/', function (Request $request) use ($app)
         {
-            $users = ApoioClient::getUsers();
+			$users = $app['users'];
             list($conversations, $totalCount) = ApoioClient::getConversations(ApoioClient::ACCESS_POINT_ARCHIVE, $users);
 
             $pageCount = ceil($totalCount/30);

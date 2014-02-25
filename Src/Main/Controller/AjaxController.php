@@ -14,6 +14,7 @@ use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Src\Main\Lib\ApoioClient;
+use Src\Main\Lib\Database;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -37,7 +38,7 @@ class AjaxController implements ControllerProviderInterface
             $type = $request->request->get('type');
             $search = $request->request->get('search');
 
-            $users = ApoioClient::getUsers();
+			$users = $app['users'];
 
             if ($search)
             {

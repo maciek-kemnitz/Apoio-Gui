@@ -12,4 +12,8 @@ define('GOOGLE_API_CLIENT_SECRET', '');
 define('SWIFT_MAILER_USERNAME', '');
 define('SWIFT_MAILER_PASSWORD', '');
 
+define('DATABASE_HOST', '');
+define('DATABASE_USER', '');
+define('DATABASE_PASSWORD', '');
+
 

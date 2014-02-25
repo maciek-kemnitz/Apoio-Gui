@@ -36,86 +36,33 @@
 	</div>
 
 	<script type="text/javascript">
+
+        var track_load = 1;
+        var inbox_track_load = 1;
+        var archive_track_load = 0;
+        var search_track_load = 1;
+        var loading  = false;
+        var inboxCount = {{ helper.inboxCount() }};
+        var archiveCount = {{ helper.archiveCount() }};
+        var searchCount = {{ helper.searchCount() }};
+        var total_groups = inboxCount + archiveCount;
+
+        var search = '';
+        {% if search is defined %}
+            search = "{{ search }}";
+        {% endif %}
+
 		$(document).ready(function(){
 
-			var track_load = 1;
-			var inbox_track_load = 1;
-			var archive_track_load = 0;
-			var search_track_load = 1;
-			var loading  = false;
-			var inboxCount = {{ helper.inboxCount() }};
-			var archiveCount = {{ helper.archiveCount() }};
-			var searchCount = {{ helper.searchCount() }};
-			var total_groups = inboxCount + archiveCount;
-
-            var search = '';
-            {% if search is defined %}
-                search = "{{ search }}";
-            {% endif %}
-
+            if ($(window).height() > $('div.main').height())
+            {
+                _sendAjax();
+            }
 			$(window).scroll(function() {
 
 				if($(window).scrollTop() + $(window).height() == $(document).height())
 				{
-					if(track_load < total_groups && loading==false)
-					{
-						loading = true;
-						$('.animation_image').show();
-						track_load++;
-
-						var tmp_track_load = track_load;
-
-						if (search)
-						{
-							search_track_load++;
-							tmp_track_load = search_track_load;
-						}
-						else if (inbox_track_load < inboxCount)
-						{
-							pageType = "inbox";
-							inbox_track_load++;
-							tmp_track_load = inbox_track_load;
-						}
-						else if (archive_track_load < archiveCount)
-						{
-							pageType = "archive";
-							archive_track_load++;
-							tmp_track_load = archive_track_load;
-						}
-
-						$.ajax({
-							type: 'POST',
-							url: '/ajax/inbox',
-							data:{
-								page: tmp_track_load,
-                                type: pageType,
-                                search: search
-							},
-							dataType: 'json',
-							success: function(result){
-								if (result['status'] == 'ok')
-								{
-									$('.animation_image').hide();
-									var loader = $("div.animation_image");
-									$("div.animation_image").remove();
-
-									$.each(result['list-item'], function(k, v) {
-										$("#conversation-list").append(v);
-									});
-
-									$("#conversation-list").append(loader);
-
-
-//									track_load++;
-									loading = false;
-								}
-								else
-								{
-
-								}
-							}
-						});
-					}
+                    _sendAjax();
 				}
 			});
 
@@ -124,6 +71,69 @@
                 window.location.href = url;
             });
 		});
+
+        function _sendAjax()
+        {
+            if(track_load < total_groups && loading==false)
+            {
+                loading = true;
+                $('.animation_image').show();
+                track_load++;
+
+                var tmp_track_load = track_load;
+
+                if (search)
+                {
+                    search_track_load++;
+                    tmp_track_load = search_track_load;
+                }
+                else if (inbox_track_load < inboxCount)
+                {
+                    pageType = "inbox";
+                    inbox_track_load++;
+                    tmp_track_load = inbox_track_load;
+                }
+                else if (archive_track_load < archiveCount)
+                {
+                    pageType = "archive";
+                    archive_track_load++;
+                    tmp_track_load = archive_track_load;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/ajax/inbox',
+                    data:{
+                        page: tmp_track_load,
+                        type: pageType,
+                        search: search
+                    },
+                    dataType: 'json',
+                    success: function(result){
+                        if (result['status'] == 'ok')
+                        {
+                            $('.animation_image').hide();
+                            var loader = $("div.animation_image");
+                            $("div.animation_image").remove();
+
+                            $.each(result['list-item'], function(k, v) {
+                                $("#conversation-list").append(v);
+                            });
+
+                            $("#conversation-list").append(loader);
+
+
+//									track_load++;
+                            loading = false;
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                });
+            }
+        }
 	</script>
 </body>
 </html>
