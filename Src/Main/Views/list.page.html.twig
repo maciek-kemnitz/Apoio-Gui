@@ -11,7 +11,111 @@
 <body style="background: url('{{ app.request.basepath }}/img/apoio_background.png')">
 	{% include 'top.block.html.twig' %}
 	<div id="conversation-list" class="well container main">
-        <div class="row page-nav-header">
+
+
+		<div class="row page-nav-header">
+			<div class="span12 text-center">
+				<h4>Najczęstsze rozwiązania najpopularniejszych problemów</h4>
+			</div>
+
+			<div class="span12">
+
+				<div class="accordion" id="accordion2">
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse1">
+								Źle przeliczone gwiazdki
+							</a>
+						</div>
+						<div id="collapse1" class="accordion-body collapse">
+							<div class="accordion-inner">
+								Wejście w edycje, zmiana czegokolwiek i zapisanie zmian.
+							</div>
+						</div>
+					</div>
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse2">
+								Źle przeliczony profile completeness
+							</a>
+						</div>
+						<div id="collapse2" class="accordion-body collapse">
+							<div class="accordion-inner">
+								Wejście w edycje, zmiana czegokolwiek i zapisanie zmian.
+							</div>
+						</div>
+					</div>
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse3">
+								Refresh URL
+							</a>
+						</div>
+						<div id="collapse3" class="accordion-body collapse">
+							<div class="accordion-inner">
+								Wejście w edycje, zmiana czegokolwiek i zapisanie zmian.
+							</div>
+						</div>
+					</div>
+
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse4">
+								Informacje na temat użytkownika/maila.
+							</a>
+						</div>
+						<div id="collapse4" class="accordion-body collapse">
+							<div class="accordion-inner">
+								<a href="https://www.znanylekarz.pl/moderacja/narzedzia/uzytkownik" target="_blank">https://www.znanylekarz.pl/moderacja/narzedzia/uzytkownik</a>
+							</div>
+						</div>
+					</div>
+
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse5">
+								Na serczu lokalizacyjnym profil wyświetla się źle na mapie
+							</a>
+						</div>
+						<div id="collapse5" class="accordion-body collapse">
+							<div class="accordion-inner">
+								Edycja -> edit address position on map
+							</div>
+						</div>
+					</div>
+
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse6">
+								Czy sms wyszedł
+							</a>
+						</div>
+						<div id="collapse6" class="accordion-body collapse">
+							<div class="accordion-inner">
+								W całej historii odnotowaliśmy może 2 przypadki kiedy sms nie wyszedł (nie z naszej winy). Jeśli nie wierzysz, Iza Ci pokaże jeśli podasz numer telefonu
+							</div>
+						</div>
+					</div>
+
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion8" href="#collapse7">
+								Kalendarz na searchu jest nieaktualny
+							</a>
+						</div>
+						<div id="collapse7" class="accordion-body collapse">
+							<div class="accordion-inner">
+								Wejście w edycje, zmiana czegokolwiek i zapisanie zmian.
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+		<div class="row page-nav-header">
             <div class="span4">
                 <h3>{% if myTickets %}My tickets {% elseif search %}Search {% else %}All tickets {% endif %}<span class="sub-header">{{ helper.getTotalCount() }} conversations</span></h3>
             </div>
