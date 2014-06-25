@@ -12,6 +12,23 @@ $app->register(new \FF\ServiceProvider\LessServiceProvider(), array(
 
 session_start();
 
+$developerEmail = [
+	'maciek.kemnitz@docplanner.com',
+	'maciej.lebkowski@docplanner.com',
+	'lukasz.barulski@docplanner.com',
+	'radek.baczynski@docplanner.com',
+	'bartlomiej.kuleszewicz@docplanner.com',
+	'michal.kutra@docplanner.com',
+	'grzegorz.krysiak@docplanner.com',
+	'marek.krokwa@docplanner.com',
+	'tomasz.wojcik@docplanner.com',
+	'dawid.pietrolaj@docplanner.com',
+];
+
+$app['developerEmail'] = $developerEmail;
+$app['twig']->addGlobal('developerEmail', $developerEmail);
+
+
 $app->mount('/ajax', new \Src\Main\Controller\AjaxController());
 $app->mount('/archive', new \Src\Main\Controller\ArchiveController());
 $app->mount('/conversation', new \Src\Main\Controller\ConversationController());

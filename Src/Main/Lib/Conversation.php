@@ -283,4 +283,24 @@ class Conversation
 
         return null;
     }
+
+	/**
+	 * @return bool
+	 */
+	public function isBuu()
+	{
+		$reallyArray = Database::getReallyArrayByIdAndType($this->getId(), 'dislike');
+		return $reallyArray ? true : false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isSmile()
+	{
+		$reallyArray = Database::getReallyArrayByIdAndType($this->getId(), 'like');
+		return $reallyArray ? true : false;
+	}
+
+
 }

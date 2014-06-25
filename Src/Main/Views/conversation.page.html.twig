@@ -6,9 +6,9 @@
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
     <script src="{{ app.request.basepath }}/js/bootstrap.js"></script>
 </head>
-<body style="background: url('{{ app.request.basepath }}/img/apoio_background.png')">
+<body>
 	{% include 'top.block.html.twig' %}
-	<div id="conversation-container" class="well container main">
+	<div id="conversation-container" class="well container main {% if conversation.isBuu() and user_email in developerEmail %}really-background{% endif %}">
         <div id="conversation-header">
             <div class="row">
                 <div class="span4">
@@ -26,6 +26,7 @@
                 </div>
             </div>
         </div>
+
         {% for message in conversation.getMessages() %}
             {% if message.show() %}
                 <div class="conversation">
@@ -88,17 +89,26 @@
                     <div class="circular" style="background: url({{ gravatar.get(user_email)|raw }}); background-size: 50px 50px;; "></div>
                 </div>
                 <div class="span10">
-                    <form action="/send-reply" method="POST">
+                    <form id="replay-form" action="/send-reply" method="POST">
                         <textarea name="comment" id="email-content"></textarea>
+                        {% if user_email in developerEmail %}
+                            <img id="buu" src="{{ app.request.basepath }}/img/buu.png" class="really" data-conversation-id="{{ conversation.getId() }}" data-img-type="dislike">
+                        {% else %}
+                            <img id="buu" src="{{ app.request.basepath }}/img/smile.png" class="smile" data-conversation-id="{{ conversation.getId() }}" data-img-type="like">
+                        {% endif %}
                         <input type="hidden" name="messageId" value="{{ conversation.getLastMessageId() }}">
                         <input type="hidden" name="subject" value="{{ conversation.getSubject() }}">
                         <input type="hidden" name="name" value="{{ display_name }}">
                         <button class="pull-right btn btn-primary btn-round" type="submit"><strong>REPLY</strong></button>
                     </form>
+
                 </div>
             </div>
         </div>
 	</div>
+    {% if conversation.isSmile() and user_email not in developerEmail %}
+        <img id="buu" src="/img/smile.png" class="smile-static">
+    {% endif %}
 <script type="text/javascript">
     $(function(){
 
@@ -119,6 +129,38 @@
 
         $(window).scroll(function() {
             stickyNav();
+        });
+
+        $('#buu').click(function(){
+
+            var conversationId = $(this).data('conversation-id');
+            var type = $(this).data('img-type');
+
+            var data = {
+                'conversationId': conversationId,
+                'type': type
+            }
+
+            $.post( "/ajax/really", data, function(result){
+                if (result['status'])
+                {
+                    if (type == 'like')
+                    {
+                        if (result['status'] == 'added')
+                        {
+                            $('body').append('<img id="buu" src="/img/smile.png" class="smile-static">');
+                        }
+                        else
+                        {
+                            $('.smile-static').remove();
+                        }
+                    }
+                    else
+                    {
+                        $('#conversation-container').toggleClass("really-background");
+                    }
+                }
+            });
         });
     });
 </script>

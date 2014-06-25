@@ -83,5 +83,48 @@ class Database
 			self::$db->exec("set names utf8");
 		}
 	}
+
+	/**
+	 * @param $conversationId
+	 * @param $type
+	 * @return mixed
+	 */
+	public static function getReallyArrayByIdAndType($conversationId, $type)
+	{
+		self::connect();
+
+		$reallyArray = self::$db->query('SELECT * FROM really WHERE conversation = '. $conversationId . ' AND type="'.$type.'"')->fetch();
+
+		return $reallyArray;
+	}
+
+	/**
+	 * @param $conversationId
+	 * @param $type
+	 */
+	public static function addReally($conversationId, $type)
+	{
+		self::connect();
+		$stm = self::$db->prepare('INSERT INTO `really`(`conversation`, `type`, `created_at`) VALUES (:conversation, :type, :created_at)');
+
+		$stm->execute([
+			"conversation" => $conversationId,
+			"created_at" => date('Y-m-d H:i:s'),
+			"type"	=> $type
+		]);
+	}
+
+	/**
+	 * @param $id
+	 * @return mixed
+	 */
+	public static function deleteReally($id)
+	{
+		self::connect();
+
+		$reallyArray = self::$db->query('DELETE FROM `really` WHERE id = '. $id)->fetch();
+
+		return $reallyArray;
+	}
 }
 

@@ -59,6 +59,28 @@ class AjaxController implements ControllerProviderInterface
             return new JsonResponse($result);
         });
 
+		$controllers->post('/really', function (Request $request) use ($app)
+		{
+			$conversationId = $request->request->get('conversationId');
+			$type = $request->request->get('type');
+
+			$reallyArray = Database::getReallyArrayByIdAndType($conversationId, $type);
+
+
+			if ($reallyArray)
+			{
+				Database::deleteReally($reallyArray['id']);
+				$result['status'] = 'removed';
+			}
+			else
+			{
+				Database::addReally($conversationId, $type);
+				$result['status'] = 'added';
+			}
+
+			return new JsonResponse($result);
+		});
+
         return $controllers;
     }
 }
