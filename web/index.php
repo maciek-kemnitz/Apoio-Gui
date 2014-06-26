@@ -13,6 +13,7 @@ $app->register(new \FF\ServiceProvider\LessServiceProvider(), array(
 session_start();
 
 $developerEmail = [
+	'maciek.kemnitz@docplanner.com',
 	'maciej.lebkowski@docplanner.com',
 	'lukasz.barulski@docplanner.com',
 	'radek.baczynski@docplanner.com',
