@@ -177,7 +177,7 @@ function getAppConfigured()
 {
     $app = new Silex\Application();
 
-    $app['debug'] = true;
+    $app['debug'] = DEBUG;
 
     $app->register(new Silex\Provider\TwigServiceProvider(), array(
         'twig.path' => __DIR__.'/../Src/Main/Views',
